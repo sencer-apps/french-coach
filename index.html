@@ -87,10 +87,10 @@ const canSay=()=>!!TTS||canWeb;
 let view='home';
 const HASNET=typeof Peer!=='undefined';
 const NAV=[['home','🏠','Ana'],['story','📖','Hikâye'],['work','🧠','Çalış']].concat(HASNET?[['duel','⚔️','Yarış']]:[],[['prog','📊','İlerleme']]);
-const WORKV=['cards','quiz','nb','nbr','dict','speak','cloze','mis','tr','irr','dlg','gr','pic','ph','em','num','pron','ten','rdy'];
+const WORKV=['cards','quiz','nb','nbr','dict','speak','cloze','mis','tr','irr','dlg','gr','pic','ph','em','num','pron','ten','rdy','gen','conj'];
 function renderNav(){$('#nav').innerHTML=NAV.map(n=>`<button data-v="${n[0]}" class="${view===n[0]||(view==='test'&&n[0]==='home')||(SUBV.includes(view)&&n[0]==='story')||(WORKV.includes(view)&&n[0]==='work')?'on':''}"><b>${n[1]}</b>${n[2]}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{view=b.dataset.v;render();});}
-function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,prog:rProg})[view]();window.scrollTo(0,0);}
+function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,gen:rGen,conj:rConj,prog:rProg})[view]();window.scrollTo(0,0);}
 const chips=()=>`<div class="row">${LEVELS.map(l=>`<button class="chip ${l===S.lvl?'sel':''}" data-l="${l}">${l}</button>`).join('')}</div>`;
 const tchips=()=>`<div class="row">${Object.entries(TOPICS).map(([k,v])=>`<button class="chip ${k===S.topic?'sel':''}" data-t="${k}">${v.ic} ${v.n}</button>`).join('')}</div>`;
 function wire(){document.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{S.lvl=b.dataset.l;save();render();});document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{S.topic=b.dataset.t;save();render();});}
@@ -777,10 +777,12 @@ function rWork(){
   <button id="w15" style="grid-column:span 2">🔢 Sayı, Saat & Tarih</button>
   <button id="w16" style="grid-column:span 2">🗣️ Telaffuz</button>
   <button id="w17" style="grid-column:span 2">📊 Zamanlar & Fiil Çekimi</button>
-  <button id="w18" style="grid-column:span 2">📰 Günlük Okuma</button></div>`;
+  <button id="w18" style="grid-column:span 2">📰 Günlük Okuma</button>
+  <button id="w19" style="grid-column:span 2">⚖️ Le mi, La mı?</button>
+  <button id="w20" style="grid-column:span 2">✏️ Fiil Çekimi Antrenmanı</button></div>`;
   wire();
   const go=(id,v,f)=>{const el=$('#'+id);if(el)el.onclick=()=>{view=v;if(f)f();render();};};
-  go('w1','nb');go('w2','dict');go('w3','speak');go('w5','mis',()=>{MR=null;});go('w6','cards');go('w7','quiz',()=>{qz=null;});go('w8','tr');go('w9','irr',()=>{IR=null;});go('w10','dlg',()=>{if(DL)DL.sel=-1;});go('w11','gr',()=>{if(GR)GR.sel=-1;});go('w12','pic',()=>{PQ=null;});go('w13','ph',()=>{PH=null;});go('w14','em',()=>{EM=null;});go('w15','num',()=>{NQ=null;});go('w16','pron',()=>{PN=null;});go('w17','ten',()=>{TQ2=null;});go('w18','rdy',()=>{RDY=null;});
+  go('w1','nb');go('w2','dict');go('w3','speak');go('w5','mis',()=>{MR=null;});go('w6','cards');go('w7','quiz',()=>{qz=null;});go('w8','tr');go('w9','irr',()=>{IR=null;});go('w10','dlg',()=>{if(DL)DL.sel=-1;});go('w11','gr',()=>{if(GR)GR.sel=-1;});go('w12','pic',()=>{PQ=null;});go('w13','ph',()=>{PH=null;});go('w14','em',()=>{EM=null;});go('w15','num',()=>{NQ=null;});go('w16','pron',()=>{PN=null;});go('w17','ten',()=>{TQ2=null;});go('w18','rdy',()=>{RDY=null;});go('w19','gen',()=>{GN=null;});go('w20','conj',()=>{CJ=null;});
 }
 // ---- ilerleme ----
 const TOT={A1:20,A2:20,B1:14,B2:16,C1:8,C2:5};
@@ -1275,6 +1277,68 @@ function numQ(lv){
   if(t==='ph'){const pr=['06','07','01','02'],d=[pickN(0,pr)];for(let i=0;i<4;i++)d.push(String(rnd(0,99)).padStart(2,'0'));
     const rd=a=>a.map(x=>x==='00'?'zéro zéro':x[0]==='0'?'zéro '+numW(+x[1]):numW(+x)).join(', ');
     const w=rd(d),a=d.join(' ');return {q:'🔊 Telefon numarası: hangisini duydun?',say:w,a,o:shuffle(uniq(a,()=>{const e=d.slice();e[rnd(1,4)]=String(rnd(0,99)).padStart(2,'0');return e.join(' ');})),mq:'🔊 "'+w+'" = ?'};}
+}
+
+// ---- Cinsiyet oyunu (le / la) ----
+let GN=null;
+async function rGen(){
+  const hd=`<button class="ghost sm" id="bk">← Çalış</button>`;
+  if(!GN||GN.lvl!==S.lvl){
+    $('#app').innerHTML=hd+`<h2>⚖️ Le mi, La mı?</h2>${chips()}<div class="card small">Yükleniyor…</div>`;wire();$('#bk').onclick=toWork;
+    const lv=S.lvl,d=await loadLevel(lv);if(view!=='gen')return;
+    const L=(d&&d.words||[]).map(x=>{const m=x.w.match(/^(le|la) ([^ ]+)$/i);return m?{g:m[1].toLowerCase(),n:m[2],w:x.w,tr:x.tr}:null;}).filter(Boolean);
+    if(L.length<10){$('#app').innerHTML=hd+`<h2>⚖️ Le mi, La mı?</h2>${chips()}<div class="card">${!LK[lv]?'Bu seviye üyeliğine dahil değil.':'Bu seviyede yeterli isim yok.'}</div>`;wire();$('#bk').onclick=toWork;return;}
+    GN={lvl:lv,L,items:shuffle(L).slice(0,10),k:0,ok:0,first:true,done:false};}
+  const N=GN;
+  if(N.k>=N.items.length){bump(6);cnt('gen',N.ok);save();
+    $('#app').innerHTML=hd+`<h2>🎉 Bitti!</h2><div class="card" style="text-align:center"><div style="font-size:42px;font-weight:800">${N.ok} / ${N.items.length}</div><p>ismin cinsiyetini ilk seferde bildin</p></div><div class="row"><button id="ag">Yeni set</button><button class="ghost" id="bk2">Çalış merkezi</button></div>`;
+    $('#bk').onclick=toWork;$('#bk2').onclick=toWork;$('#ag').onclick=()=>{GN=null;rGen();};return;}
+  const it=N.items[N.k];
+  $('#app').innerHTML=hd+`<h2>⚖️ Le mi, La mı?</h2>${chips()}<p class="sub">${N.lvl} • ${N.k+1} / ${N.items.length}</p><div class="bar"><i style="width:${N.k/N.items.length*100}%"></i></div>
+  <div class="card" style="text-align:center">${emoBig(it.w)}<div style="font-size:30px;font-weight:800">${esc(it.n)}</div><div class="small">${esc(it.tr)}</div>
+  <div class="row" style="justify-content:center;margin-top:12px"><button class="opt" data-g="le" style="flex:1">le<br><span class="small">eril</span></button><button class="opt" data-g="la" style="flex:1">la<br><span class="small">dişil</span></button></div><div id="nx"></div></div>
+  <div class="card small">💡 İpucu: -tion, -sion, -té, -ure, -ette çoğunlukla <b>la</b>; -ment, -age, -eau, -isme çoğunlukla <b>le</b>.</div>`;
+  wire();$('#bk').onclick=toWork;
+  document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{if(N.done)return;
+    if(b.dataset.g===it.g){N.done=true;if(N.first)N.ok++;xpa(2);b.classList.add('ok');say(it.w);
+      $('#nx').innerHTML=`<div style="margin-top:10px;font-weight:700">${esc(it.w)}</div><button id="nb" style="margin-top:8px">${N.k+1>=N.items.length?'Bitir':'Sonraki'} ➜</button>`;$('#nb').onclick=()=>{N.done=false;N.first=true;N.k++;rGen();};}
+    else{if(N.first)misAdd({t:'x',q:'"'+it.n+'" ('+it.tr+') — le mi, la mı?',o:['le','la'],a:it.g});N.first=false;b.classList.add('bad');b.disabled=true;}});
+}
+// ---- Fiil çekimi antrenmanı ----
+const CJV=[["être","olmak",["suis","es","est","sommes","êtes","sont"],"été","avoir","ét","ser"],["avoir","sahip olmak",["ai","as","a","avons","avez","ont"],"eu","avoir","av","aur"],["aller","gitmek",["vais","vas","va","allons","allez","vont"],"allé","être","all","ir"],["faire","yapmak",["fais","fais","fait","faisons","faites","font"],"fait","avoir","fais","fer"],["venir","gelmek",["viens","viens","vient","venons","venez","viennent"],"venu","être","ven","viendr"],["prendre","almak",["prends","prends","prend","prenons","prenez","prennent"],"pris","avoir","pren","prendr"],["pouvoir","-ebilmek",["peux","peux","peut","pouvons","pouvez","peuvent"],"pu","avoir","pouv","pourr"],["vouloir","istemek",["veux","veux","veut","voulons","voulez","veulent"],"voulu","avoir","voul","voudr"],["devoir","-meli",["dois","dois","doit","devons","devez","doivent"],"dû","avoir","dev","devr"],["savoir","bilmek",["sais","sais","sait","savons","savez","savent"],"su","avoir","sav","saur"],["voir","görmek",["vois","vois","voit","voyons","voyez","voient"],"vu","avoir","voy","verr"],["dire","söylemek",["dis","dis","dit","disons","dites","disent"],"dit","avoir","dis","dir"],["mettre","koymak",["mets","mets","met","mettons","mettez","mettent"],"mis","avoir","mett","mettr"],["parler","konuşmak",["parle","parles","parle","parlons","parlez","parlent"],"parlé","avoir","parl","parler"],["habiter","oturmak",["habite","habites","habite","habitons","habitez","habitent"],"habité","avoir","habit","habiter"],["aimer","sevmek",["aime","aimes","aime","aimons","aimez","aiment"],"aimé","avoir","aim","aimer"],["finir","bitirmek",["finis","finis","finit","finissons","finissez","finissent"],"fini","avoir","finiss","finir"],["choisir","seçmek",["choisis","choisis","choisit","choisissons","choisissez","choisissent"],"choisi","avoir","choisiss","choisir"],["vendre","satmak",["vends","vends","vend","vendons","vendez","vendent"],"vendu","avoir","vend","vendr"],["attendre","beklemek",["attends","attends","attend","attendons","attendez","attendent"],"attendu","avoir","attend","attendr"],["partir","gitmek",["pars","pars","part","partons","partez","partent"],"parti","être","part","partir"],["sortir","çıkmak",["sors","sors","sort","sortons","sortez","sortent"],"sorti","être","sort","sortir"],["arriver","varmak",["arrive","arrives","arrive","arrivons","arrivez","arrivent"],"arrivé","être","arriv","arriver"],["lire","okumak",["lis","lis","lit","lisons","lisez","lisent"],"lu","avoir","lis","lir"],["écrire","yazmak",["écris","écris","écrit","écrivons","écrivez","écrivent"],"écrit","avoir","écriv","écrir"],["boire","içmek",["bois","bois","boit","buvons","buvez","boivent"],"bu","avoir","buv","boir"],["connaître","tanımak",["connais","connais","connaît","connaissons","connaissez","connaissent"],"connu","avoir","connaiss","connaîtr"]];
+const CJP=['je','tu','il','nous','vous','ils'],CJPT=['Je','Tu','Il','Nous','Vous','Ils'];
+const CJT={pr:'Şimdiki zaman (présent)',pc:'Passé composé',im:'Imparfait',fu:'Futur simple'};
+const cjEl=(p,f)=>(p===0&&/^[aeiouyhéèêâîôûœ]/i.test(f))?"j'"+f:CJP[p]+' '+f;
+function cjAns(v,t,p){
+  const [inf,tr,pr,pp,aux,im,fu]=v,AUX={avoir:['ai','as','a','avons','avez','ont'],'être':['suis','es','est','sommes','êtes','sont']}[aux];
+  if(t==='pr')return pr[p];
+  if(t==='pc'){const pl=p>=3?(aux==='être'?pp+'s':pp):pp;return AUX[p]+' '+(aux==='être'&&p>=3&&/s$/.test(pp)?pp:pl);}
+  if(t==='im')return im+['ais','ais','ait','ions','iez','aient'][p];
+  return fu+['ai','as','a','ons','ez','ont'][p];
+}
+const cjNorm=x=>String(x||'').toLowerCase().replace(/[’‘]/g,"'").normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/^(je |j'|tu |il |elle |on |nous |vous |ils |elles )/,'').replace(/\s+/g,' ').trim();
+let CJ=null;
+function cjQ(){const lv=S.lvl,T=lv==='A1'?['pr']:lv==='A2'?['pr','pc']:['pr','pc','im','fu'];
+  const pool=lv==='A1'?CJV.slice(0,16):CJV;const v=pool[rnd(0,pool.length-1)],t=T[rnd(0,T.length-1)],p=rnd(0,5);return {v,t,p,a:cjAns(v,t,p)};}
+function rConj(){
+  const hd=`<button class="ghost sm" id="bk">← Çalış</button>`;
+  if(!CJ||CJ.lvl!==S.lvl)CJ={lvl:S.lvl,k:0,ok:0,n:10,first:true,res:null,cur:cjQ()};
+  const N=CJ;
+  if(N.k>=N.n){bump(6);cnt('conj',N.ok);save();
+    $('#app').innerHTML=hd+`<h2>🎉 Bitti!</h2><div class="card" style="text-align:center"><div style="font-size:42px;font-weight:800">${N.ok} / ${N.n}</div><p>çekimi ilk seferde doğru yazdın</p></div><div class="row"><button id="ag">Yeni set</button><button class="ghost" id="bk2">Çalış merkezi</button></div>`;
+    $('#bk').onclick=toWork;$('#bk2').onclick=toWork;$('#ag').onclick=()=>{CJ=null;rConj();};return;}
+  const c=N.cur,[inf,tr]=c.v,r=N.res;
+  $('#app').innerHTML=hd+`<h2>✏️ Fiil Çekimi</h2>${chips()}<p class="sub">${N.lvl} • ${N.k+1} / ${N.n}</p><div class="bar"><i style="width:${N.k/N.n*100}%"></i></div>
+  <div class="card" style="text-align:center"><div style="font-size:26px;font-weight:800">${esc(inf)}</div><div class="small">${esc(tr)} • ${CJT[c.t]}</div>
+  <div style="font-size:22px;margin:10px 0"><b>${CJPT[c.p]}</b> …</div>
+  <input id="a" placeholder="çekimi yaz (öznesiz de olur)" autocapitalize="off" autocomplete="off" autocorrect="off" value="${r?esc(r.a):''}" ${r?'readonly':''} style="width:100%">
+  ${r?`<div class="card" style="background:${r.ok?'#ecfdf5':'#fef2f2'};margin-top:8px">${r.ok?'✅ Doğru!':'❌ Doğrusu:'} <b>${esc(cjEl(c.p,c.a))}</b>${c.v[4]==='être'&&c.t==='pc'?'<div class="small">(être ile kurulan fiillerde participe özneye uyar; burada erkek özne.)</div>':''}<button class="ghost sm" id="sp" style="margin-top:6px">🔊 Dinle</button></div><button id="nx" style="margin-top:8px">${N.k+1>=N.n?'Bitir':'Devam'} ➜</button>`:`<button id="ck" style="margin-top:8px">Kontrol et</button>`}</div>`;
+  wire();$('#bk').onclick=toWork;
+  if(r){$('#sp').onclick=()=>say(cjEl(c.p,c.a));$('#nx').onclick=()=>{N.k++;N.res=null;N.cur=cjQ();rConj();};return;}
+  $('#a').focus();
+  const chk=()=>{const a=$('#a').value,ok=cjNorm(a)===cjNorm(c.a);if(ok){N.ok++;xpa(2);say(cjEl(c.p,c.a));}else misAdd({t:'x',q:inf+' — '+CJPT[c.p]+' ('+CJT[c.t]+')',o:[c.a,cjAns(c.v,c.t,(c.p+1)%6),cjAns(c.v,c.t,(c.p+2)%6),cjAns(c.v,c.t,(c.p+3)%6)].filter((x,i,A)=>A.indexOf(x)===i),a:c.a});
+    N.res={a,ok};rConj();};
+  $('#ck').onclick=chk;$('#a').onkeydown=e=>{if(e.key==='Enter')chk();};
 }
 
 let NQ=null;
