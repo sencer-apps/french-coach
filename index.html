@@ -87,10 +87,10 @@ const canSay=()=>!!TTS||canWeb;
 let view='home';
 const HASNET=typeof Peer!=='undefined';
 const NAV=[['home','🏠','Ana'],['story','📖','Hikâye'],['work','🧠','Çalış']].concat(HASNET?[['duel','⚔️','Yarış']]:[],[['prog','📊','İlerleme']]);
-const WORKV=['cards','quiz','nb','nbr','dict','speak','cloze','mis','tr','irr','dlg','gr','pic','ph','em','num','pron','ten','rdy','gen','conj'];
+const WORKV=['cards','quiz','nb','nbr','dict','speak','cloze','mis','tr','irr','dlg','gr','pic','ph','em','num','pron','ten','rdy','gen','conj','mq'];
 function renderNav(){$('#nav').innerHTML=NAV.map(n=>`<button data-v="${n[0]}" class="${view===n[0]||(view==='test'&&n[0]==='home')||(SUBV.includes(view)&&n[0]==='story')||(WORKV.includes(view)&&n[0]==='work')?'on':''}"><b>${n[1]}</b>${n[2]}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{view=b.dataset.v;render();});}
-function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,gen:rGen,conj:rConj,prog:rProg})[view]();window.scrollTo(0,0);}
+function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,gen:rGen,conj:rConj,mq:()=>rMq(MQ&&MQ.id||'hom'),prog:rProg})[view]();window.scrollTo(0,0);}
 const chips=()=>`<div class="row">${LEVELS.map(l=>`<button class="chip ${l===S.lvl?'sel':''}" data-l="${l}">${l}</button>`).join('')}</div>`;
 const tchips=()=>`<div class="row">${Object.entries(TOPICS).map(([k,v])=>`<button class="chip ${k===S.topic?'sel':''}" data-t="${k}">${v.ic} ${v.n}</button>`).join('')}</div>`;
 function wire(){document.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{S.lvl=b.dataset.l;save();render();});document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{S.topic=b.dataset.t;save();render();});}
@@ -779,10 +779,12 @@ function rWork(){
   <button id="w17" style="grid-column:span 2">📊 Zamanlar & Fiil Çekimi</button>
   <button id="w18" style="grid-column:span 2">📰 Günlük Okuma</button>
   <button id="w19" style="grid-column:span 2">⚖️ Le mi, La mı?</button>
-  <button id="w20" style="grid-column:span 2">✏️ Fiil Çekimi Antrenmanı</button></div>`;
+  <button id="w20" style="grid-column:span 2">✏️ Fiil Çekimi Antrenmanı</button>
+  <button id="w21" style="grid-column:span 2">🔤 Ses & Yazım (a/à, et/est…)</button>
+  <button id="w22" style="grid-column:span 2">🔗 Bağlama (Liaison)</button></div>`;
   wire();
   const go=(id,v,f)=>{const el=$('#'+id);if(el)el.onclick=()=>{view=v;if(f)f();render();};};
-  go('w1','nb');go('w2','dict');go('w3','speak');go('w5','mis',()=>{MR=null;});go('w6','cards');go('w7','quiz',()=>{qz=null;});go('w8','tr');go('w9','irr',()=>{IR=null;});go('w10','dlg',()=>{if(DL)DL.sel=-1;});go('w11','gr',()=>{if(GR)GR.sel=-1;});go('w12','pic',()=>{PQ=null;});go('w13','ph',()=>{PH=null;});go('w14','em',()=>{EM=null;});go('w15','num',()=>{NQ=null;});go('w16','pron',()=>{PN=null;});go('w17','ten',()=>{TQ2=null;});go('w18','rdy',()=>{RDY=null;});go('w19','gen',()=>{GN=null;});go('w20','conj',()=>{CJ=null;});
+  go('w1','nb');go('w2','dict');go('w3','speak');go('w5','mis',()=>{MR=null;});go('w6','cards');go('w7','quiz',()=>{qz=null;});go('w8','tr');go('w9','irr',()=>{IR=null;});go('w10','dlg',()=>{if(DL)DL.sel=-1;});go('w11','gr',()=>{if(GR)GR.sel=-1;});go('w12','pic',()=>{PQ=null;});go('w13','ph',()=>{PH=null;});go('w14','em',()=>{EM=null;});go('w15','num',()=>{NQ=null;});go('w16','pron',()=>{PN=null;});go('w17','ten',()=>{TQ2=null;});go('w18','rdy',()=>{RDY=null;});go('w19','gen',()=>{GN=null;});go('w20','conj',()=>{CJ=null;});go('w21','mq',()=>{MQ={id:'hom',items:mqItems('hom'),k:0,ok:0,first:true,done:false};});go('w22','mq',()=>{MQ={id:'lia',items:mqItems('lia'),k:0,ok:0,first:true,done:false};});
 }
 // ---- ilerleme ----
 const TOT={A1:20,A2:20,B1:14,B2:16,C1:8,C2:5};
@@ -1339,6 +1341,63 @@ function rConj(){
   const chk=()=>{const a=$('#a').value,ok=cjNorm(a)===cjNorm(c.a);if(ok){N.ok++;xpa(2);say(cjEl(c.p,c.a));}else misAdd({t:'x',q:inf+' — '+CJPT[c.p]+' ('+CJT[c.t]+')',o:[c.a,cjAns(c.v,c.t,(c.p+1)%6),cjAns(c.v,c.t,(c.p+2)%6),cjAns(c.v,c.t,(c.p+3)%6)].filter((x,i,A)=>A.indexOf(x)===i),a:c.a});
     N.res={a,ok};rConj();};
   $('#ck').onclick=chk;$('#a').onkeydown=e=>{if(e.key==='Enter')chk();};
+}
+
+// ---- Ses & yazım (homofonlar) ve Bağlama (liaison) çalışmaları ----
+const HOM=[
+["Il ___ un chat.",["a","à"],"a","Onun bir kedisi var."],["Je vais ___ Paris.",["a","à"],"à","Paris'e gidiyorum."],["Tu ___ un chat ?",["as","a"],"as","Bir kedin mi var?"],
+["Elle ___ belle.",["et","est"],"est","O güzel."],["Paul ___ Marie sont amis.",["et","est"],"et","Paul ve Marie arkadaş."],["Il ___ fatigué.",["es","est"],"est","O yorgun."],["Tu ___ fatigué.",["es","est"],"es","Sen yorgunsun."],
+["___ mon livre.",["Ses","Ces","C'est","S'est"],"C'est","Bu benim kitabım."],["Il ___ lavé.",["s'est","c'est","ses","ces"],"s'est","O yıkandı."],["Regarde ___ fleurs, là-bas !",["ses","ces"],"ces","Şuradaki çiçeklere bak!"],
+["___ mange du pain.",["On","Ont"],"On","Biri ekmek yiyor / Ekmek yiyoruz."],["Ils ___ faim.",["on","ont"],"ont","Acıkmışlar."],
+["Ils ___ contents.",["son","sont"],"sont","Onlar memnun."],["C'est ___ livre.",["son","sont"],"son","Bu onun kitabı."],
+["Tu veux du thé ___ du café ?",["ou","où"],"ou","Çay mı kahve mi istersin?"],["___ habites-tu ?",["Ou","Où"],"Où","Nerede oturuyorsun?"],
+["Elle est ___ !",["la","là"],"là","O orada!"],["___ voiture est rouge.",["La","Là"],"La","Araba kırmızı."],
+["___ garçon est sympa.",["Ce","Se"],"Ce","Bu çocuk sempatik."],["Il ___ lave.",["ce","se"],"se","O yıkanıyor."],
+["Ils aiment ___ voiture.",["leur","leurs"],"leur","Onların arabasını severler."],["___ amis sont là.",["Leur","Leurs"],"Leurs","Onların arkadaşları orada."],
+["___ va bien.",["Ça","Sa"],"Ça","İyi gidiyor."],["C'est ___ maison.",["ça","sa"],"sa","Bu onun evi."],
+["Je veux, ___ je ne peux pas.",["mais","mes","met"],"mais","İstiyorum ama yapamıyorum."],["___ amis sont là.",["Mais","Mes","Met"],"Mes","Arkadaşlarım orada."],
+["Il parle ___.",["peu","peut"],"peu","Az konuşuyor."],["Elle ___ venir.",["peu","peut"],"peut","Gelebilir."],
+["___ heure est-il ?",["Quelle","Qu'elle"],"Quelle","Saat kaç?"],["Je crois qu'___ est partie.",["quelle","qu'elle"],"qu'elle","Sanırım gitti."],
+["Il n'a ___ faim ni soif.",["ni","n'y"],"ni","Ne açlığı ne susuzluğu var."],["Je ___ crois pas.",["ni","n'y"],"n'y","Buna inanmıyorum."],
+["Il est ___ argent.",["sans","cent","sent"],"sans","Parasız."],["Ça ___ bon.",["sans","cent","sent"],"sent","Güzel kokuyor."],["J'ai ___ euros.",["sans","cent","sent"],"cent","Yüz euro'm var."],
+["Tu ___ la réponse.",["sais","sait"],"sais","Cevabı biliyorsun."],["Il ___ la réponse.",["sais","sait"],"sait","Cevabı biliyor."],
+["J'ai mangé ___ pain.",["du","dû"],"du","Ekmek yedim."],["Il a ___ partir.",["du","dû"],"dû","Gitmek zorunda kaldı."],
+["Je bois un ___ d'eau.",["verre","vert","ver"],"verre","Bir bardak su içiyorum."],
+["Donne-___ le livre.",["moi","mois","mais"],"moi","Kitabı bana ver."],["Il y a douze ___ dans l'année.",["moi","mois","mais"],"mois","Yılda on iki ay var."],
+["Il ___ la main.",["temps","tant","tend"],"tend","Elini uzatıyor."],["Il y a ___ de monde.",["temps","tant","tend"],"tant","Çok fazla insan var."],
+["Il marche ___ la gare.",["vers","verre","vert"],"vers","İstasyona doğru yürüyor."],
+["La ___ est bleue.",["mer","mère","maire"],"mer","Deniz mavi."],["Ma ___ cuisine.",["mer","mère","maire"],"mère","Annem yemek yapıyor."],["Le ___ de la ville.",["mer","mère","maire"],"maire","Şehrin belediye başkanı."]
+].filter(x=>x[1].includes(x[2]));
+const LIA=[
+["les amis","lé-za-mi",["lé-a-mi","lés-a-mi"],"Zorunlu bağlama: s → z"],["vous avez","vu-za-vé",["vu-a-vé","vus-a-vé"],"Zorunlu bağlama: s → z"],["ils ont","il-zon",["il-on","ils-on"],"Zorunlu bağlama: s → z"],["un ami","ö̃-na-mi",["ö̃-a-mi","ö̃n-a-mi"],"Zorunlu bağlama: n okunur"],
+["petit ami","pö-ti-ta-mi",["pö-ti-a-mi","pö-ti-da-mi"],"Zorunlu bağlama: t okunur"],["grand homme","gran-tom",["gran-dom","gran-om"],"d, bağlamada t okunur"],["dix amis","di-za-mi",["di-a-mi","dis-a-mi"],"x → z"],["six ans","si-zan",["si-an","sis-an"],"x → z"],
+["deux heures","dö-zör",["dö-ör","dös-ör"],"x → z"],["neuf heures","nö-vör",["nö-för","nö-ör"],"f → v"],["quand il","kan-til",["kan-dil","kan-il"],"d → t"],["bon ami","bo-na-mi",["bo-a-mi","bon-a-mi"],"Nazal ünlü + n"],
+["mon ami","mo-na-mi",["mo-a-mi","mon-a-mi"],"Nazal ünlü + n"],["chez eux","şé-zö",["şé-ö","şés-ö"],"z bağlaması"],["dans un","dan-zö̃",["dan-ö̃","dans-ö̃"],"s → z"],["très utile","tré-zü-til",["tré-ü-til","trés-ü-til"],"s → z"],
+["les États","lé-zé-ta",["lé-é-ta","lés-é-ta"],"Zorunlu bağlama"],["les haricots","lé-a-ri-ko",["lé-za-ri-ko","lés-a-ri-ko"],"H aspiré: bağlama YOK"],["un héros","ö̃-é-ro",["ö̃-né-ro","ö̃n-é-ro"],"H aspiré: bağlama YOK"],["les héros","lé-é-ro",["lé-zé-ro","lés-é-ro"],"H aspiré: bağlama YOK"],
+["en Italie","a-ni-ta-li",["a-i-ta-li","an-i-ta-li"],"Nazal ünlü + n"],["pas à pas","pa-za-pa",["pa-a-pa","pas-a-pa"],"s → z (sabit kalıp)"],["ils étaient","il-zé-té",["il-é-té","ils-é-té"],"Zorunlu bağlama"],["aux États-Unis","o-zé-ta-zü-ni",["o-é-ta-zü-ni","os-é-ta-zü-ni"],"Zorunlu bağlama"]
+];
+let MQ=null;
+function mqItems(id){
+  if(id==='hom')return shuffle(HOM).slice(0,10).map(x=>({q:x[0],o:shuffle(x[1].slice()),a:x[2],tr:x[3],fill:true}));
+  return shuffle(LIA).slice(0,10).map(x=>({q:x[0],o:shuffle([x[1],...x[2]]),a:x[1],tr:x[3],say:x[0]}));
+}
+function rMq(id){
+  const hd=`<button class="ghost sm" id="bk">← Çalış</button>`,title=id==='hom'?'🔤 Ses & Yazım':'🔗 Bağlama (Liaison)';
+  if(!MQ||MQ.id!==id)MQ={id,items:mqItems(id),k:0,ok:0,first:true,done:false};
+  const N=MQ,n=N.items.length;
+  if(N.k>=n){bump(6);cnt(id,N.ok);save();
+    $('#app').innerHTML=hd+`<h2>🎉 Bitti!</h2><div class="card" style="text-align:center"><div style="font-size:42px;font-weight:800">${N.ok} / ${n}</div><p>soruyu ilk seferde doğru bildin</p></div><div class="row"><button id="ag">Yeni set</button><button class="ghost" id="bk2">Çalış merkezi</button></div>`;
+    $('#bk').onclick=toWork;$('#bk2').onclick=toWork;$('#ag').onclick=()=>{MQ=null;rMq(id);};return;}
+  const it=N.items[N.k];
+  const q=id==='hom'?`<div style="font-size:22px;font-weight:700;margin:6px 0">${esc(it.q).replace('___','<span style="border-bottom:3px solid #4f46e5;padding:0 14px">&nbsp;&nbsp;</span>')}</div><div class="small">${esc(it.tr)}</div>`
+    :`<button id="pl" style="font-size:20px;padding:12px 20px">🔊 Dinle</button><div style="font-size:22px;font-weight:700;margin:10px 0">${esc(it.q)}</div><div class="small">Yaklaşık okunuş hangisi?</div>`;
+  $('#app').innerHTML=hd+`<h2>${title}</h2><p class="sub">${N.k+1} / ${n}</p><div class="bar"><i style="width:${N.k/n*100}%"></i></div><div class="card" style="text-align:center">${q}<div id="os" style="text-align:left;margin-top:10px">${it.o.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('')}</div><div id="nx"></div></div>`;
+  wire();$('#bk').onclick=toWork;
+  if(id==='lia'){$('#pl').onclick=()=>say(it.say);setTimeout(()=>{if(view==='mq'&&MQ===N&&N.items[N.k]===it&&!N.done)say(it.say);},300);}
+  document.querySelectorAll('#os .opt').forEach(b=>b.onclick=()=>{if(N.done)return;const o=it.o[+b.dataset.i];
+    if(o===it.a){N.done=true;if(N.first)N.ok++;xpa(2);b.classList.add('ok');say(it.fill?it.q.replace('___',it.a):it.say);
+      $('#nx').innerHTML=`<div class="small" style="margin-top:8px">${it.fill?esc(it.q.replace('___',it.a)):esc(it.tr)}</div><button id="nb" style="margin-top:8px">${N.k+1>=n?'Bitir':'Sonraki'} ➜</button>`;$('#nb').onclick=()=>{N.k++;N.done=false;N.first=true;rMq(id);};}
+    else{if(N.first)misAdd({t:'x',q:id==='hom'?it.q+' — '+it.tr:'"'+it.q+'" — okunuşu?',o:it.o,a:it.a});N.first=false;b.classList.add('bad');b.disabled=true;}});
 }
 
 let NQ=null;
