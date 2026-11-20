@@ -93,10 +93,10 @@ function pv(u){try{let pick=null;let sv=null;try{sv=localStorage.getItem('vc_'+V
 let view='home';
 const HASNET=typeof Peer!=='undefined';
 const NAV=[['home','🏠','Ana'],['story','📖','Hikâye'],['work','🧠','Çalış']].concat(HASNET?[['duel','⚔️','Yarış']]:[],[['prog','📊','İlerleme']]);
-const WORKV=['cards','quiz','nb','nbr','dict','speak','cloze','mis','tr','irr','dlg','gr','pic','ph','em','num','pron','ten','rdy','gen','conj','mq','cult'];
+const WORKV=['cards','quiz','nb','nbr','dict','speak','cloze','mis','tr','irr','dlg','gr','pic','ph','em','num','pron','ten','rdy','gen','conj','mq','cult','pr2'];
 function renderNav(){$('#nav').innerHTML=NAV.map(n=>`<button data-v="${n[0]}" class="${view===n[0]||(view==='test'&&n[0]==='home')||(SUBV.includes(view)&&n[0]==='story')||(WORKV.includes(view)&&n[0]==='work')?'on':''}"><b>${n[1]}</b>${n[2]}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{view=b.dataset.v;render();});}
-function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,gen:rGen,conj:rConj,mq:()=>rMq(MQ&&MQ.id||'hom'),cult:rCult,prog:rProg})[view]();window.scrollTo(0,0);}
+function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,gen:rGen,conj:rConj,mq:()=>rMq(MQ&&MQ.id||'hom'),cult:rCult,pr2:rPr2,prog:rProg})[view]();window.scrollTo(0,0);}
 const chips=()=>`<div class="row">${LEVELS.map(l=>`<button class="chip ${l===S.lvl?'sel':''}" data-l="${l}">${l}</button>`).join('')}</div>`;
 const tchips=()=>`<div class="row">${Object.entries(TOPICS).map(([k,v])=>`<button class="chip ${k===S.topic?'sel':''}" data-t="${k}">${v.ic} ${v.n}</button>`).join('')}</div>`;
 function wire(){document.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{S.lvl=b.dataset.l;save();render();});document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{S.topic=b.dataset.t;save();render();});}
@@ -793,10 +793,11 @@ function rWork(){
   <button id="w20" style="grid-column:span 2">✏️ Fiil Çekimi Antrenmanı</button>
   <button id="w21" style="grid-column:span 2">🔤 Ses & Yazım (a/à, et/est…)</button>
   <button id="w22" style="grid-column:span 2">🔗 Bağlama (Liaison)</button>
-  <button id="w23" style="grid-column:span 2">🇫🇷 Kültür & Deyimler</button></div>`;
+  <button id="w23" style="grid-column:span 2">🇫🇷 Kültür & Deyimler</button>
+  <button id="w24" style="grid-column:span 2">📖 Okunuş Rehberi & Virelangue</button></div>`;
   wire();
   const go=(id,v,f)=>{const el=$('#'+id);if(el)el.onclick=()=>{view=v;if(f)f();render();};};
-  go('w1','nb');go('w2','dict');go('w3','speak');go('w5','mis',()=>{MR=null;});go('w6','cards');go('w7','quiz',()=>{qz=null;});go('w8','tr');go('w9','irr',()=>{IR=null;});go('w10','dlg',()=>{if(DL)DL.sel=-1;});go('w11','gr',()=>{if(GR)GR.sel=-1;});go('w12','pic',()=>{PQ=null;});go('w13','ph',()=>{PH=null;});go('w14','em',()=>{EM=null;});go('w15','num',()=>{NQ=null;});go('w16','pron',()=>{PN=null;});go('w17','ten',()=>{TQ2=null;});go('w18','rdy',()=>{RDY=null;});go('w19','gen',()=>{GN=null;});go('w20','conj',()=>{CJ=null;});go('w23','cult',()=>{CU={tab:'prv',q:null};});go('w21','mq',()=>{MQ={id:'hom',items:mqItems('hom'),k:0,ok:0,first:true,done:false};});go('w22','mq',()=>{MQ={id:'lia',items:mqItems('lia'),k:0,ok:0,first:true,done:false};});
+  go('w1','nb');go('w2','dict');go('w3','speak');go('w5','mis',()=>{MR=null;});go('w6','cards');go('w7','quiz',()=>{qz=null;});go('w8','tr');go('w9','irr',()=>{IR=null;});go('w10','dlg',()=>{if(DL)DL.sel=-1;});go('w11','gr',()=>{if(GR)GR.sel=-1;});go('w12','pic',()=>{PQ=null;});go('w13','ph',()=>{PH=null;});go('w14','em',()=>{EM=null;});go('w15','num',()=>{NQ=null;});go('w16','pron',()=>{PN=null;});go('w17','ten',()=>{TQ2=null;});go('w18','rdy',()=>{RDY=null;});go('w19','gen',()=>{GN=null;});go('w20','conj',()=>{CJ=null;});go('w24','pr2',()=>{P2={tab:'rgl',v:-1,rate:.6,res:null,msg:'',listening:false};});go('w23','cult',()=>{CU={tab:'prv',q:null};});go('w21','mq',()=>{MQ={id:'hom',items:mqItems('hom'),k:0,ok:0,first:true,done:false};});go('w22','mq',()=>{MQ={id:'lia',items:mqItems('lia'),k:0,ok:0,first:true,done:false};});
 }
 // ---- ilerleme ----
 const TOT={A1:20,A2:20,B1:14,B2:16,C1:8,C2:5};
@@ -1355,6 +1356,90 @@ function rConj(){
   $('#ck').onclick=chk;$('#a').onkeydown=e=>{if(e.key==='Enter')chk();};
 }
 
+// ---- Okunuş rehberi (harf → ses) ve virelangues (tekerlemeler) ----
+const RGL=[
+["ou","/u/ — Türkçe 'u' gibi","vous, nous, tout, rouge",["vous","nous","tout","rouge"]],
+["u","/y/ — Türkçe 'ü' gibi (dudak yuvarlak, dil 'i' konumunda)","tu, rue, sur, une",["tu","rue","sur","une"]],
+["oi","/wa/ — 'ua' gibi","moi, toi, voiture, trois",["moi","toi","voiture","trois"]],
+["ai, ei","/ɛ/ — açık 'e'","mais, j'ai, neige, maison",["mais","neige","maison","la reine"]],
+["au, eau","/o/ — kapalı 'o'","eau, chaud, beau, aussi",["eau","chaud","beau","aussi"]],
+["eu, œu","/ø/ ya da /œ/ — 'ö' gibi","peu, deux, sœur, cœur",["peu","deux","sœur","cœur"]],
+["é","/e/ — kapalı 'e'","été, café, école",["été","café","école"]],
+["è, ê, ë","/ɛ/ — açık 'e'","père, tête, Noël",["père","tête","Noël"]],
+["e (sonda)","Çoğu zaman okunmaz (sessiz e)","porte, table, grande",["porte","table","grande"]],
+["an, en","/ɑ̃/ — burundan 'an'","dans, vent, enfant, temps",["dans","vent","enfant","temps"]],
+["on","/ɔ̃/ — burundan 'on'","bon, nom, long, mon",["bon","nom","long","mon"]],
+["in, ain, ein","/ɛ̃/ — burundan 'en'","vin, pain, plein, matin",["vin","pain","plein","matin"]],
+["un","/œ̃/ — birçok kişide /ɛ̃/ gibi","un, lundi, brun",["un","lundi","brun"]],
+["ch","/ʃ/ — Türkçe 'ş'","chat, chaud, riche",["chat","chaud","riche"]],
+["j, g (e/i önünde)","/ʒ/ — Türkçe 'j' (jale)","jour, je, genou, girafe",["jour","je","genou","girafe"]],
+["g (a/o/u önünde), gu","/g/ — Türkçe 'g'","gare, gomme, guerre, guitare",["gare","gomme","guerre","guitare"]],
+["gn","/ɲ/ — 'ny' gibi","montagne, signe, agneau",["montagne","signe","agneau"]],
+["qu, k","/k/ — 'k'","qui, quand, kilo",["qui","quand","kilo"]],
+["c (e/i önünde), ç","/s/ — 's'","ce, ici, ça, français",["ce","ici","ça","français"]],
+["c (a/o/u önünde)","/k/ — 'k'","café, comme, cuisine",["café","comme","cuisine"]],
+["s (iki ünlü arası)","/z/ — 'z'","rose, maison, poison",["rose","maison","poison"]],
+["ss","/s/ — 's'","poisson, classe, dessert",["poisson","classe","dessert"]],
+["ph, th","ph = /f/, th = /t/","photo, pharmacie, thé",["photo","pharmacie","thé"]],
+["h","Hiç okunmaz","homme, hôtel, histoire",["homme","hôtel","histoire"]],
+["ill","/ij/ — 'iy' gibi (ville, mille, tranquille: /il/)","fille, famille, travail",["fille","famille","travail"]],
+["x","/ks/ ya da /gz/","taxi, examen, exemple",["taxi","examen","exemple"]],
+["-er, -ez (sonda)","/e/ — fiil sonu 'é'","manger, parler, vous parlez",["manger","parler","vous parlez"]],
+["-ent (fiil sonu)","Sessiz: ils parlent = ils parl","ils parlent, elles mangent",["ils parlent","elles mangent"]],
+["sondaki -t, -s, -d, -x, -p","Genelde okunmaz","petit, trop, chaud, deux, grand",["petit","trop","chaud","deux","grand"]],
+["r","/ʁ/ — boğazdan sürtünmeli 'r' (Türkçe 'r' gibi dil titremez)","rue, rouge, mari, mer",["rue","rouge","mari","mer"]],
+];
+const VIR=[
+["Cinq chiens chassent six chats.","Beş köpek altı kediyi kovalıyor."],
+["Le ver vert va vers le verre.","Yeşil solucan bardağa doğru gidiyor."],
+["Trois gros rats gris dans trois gros trous ronds.","Üç iri gri sıçan üç iri yuvarlak delikte."],
+["Tonton, ton thé t'a-t-il ôté ta toux ?","Amca, çayın öksürüğünü geçirdi mi?"],
+["Poisson sans boisson est poison.","İçeceksiz balık zehirdir."],
+["Les poules du couvent couvent.","Manastırın tavukları kuluçkaya yatıyor."],
+["Un chasseur sachant chasser doit savoir chasser sans son chien.","Avlanmayı bilen bir avcı köpeği olmadan da avlanabilmeli."],
+["Didon dîna dit-on du dos d'un dodu dindon.","Derler ki Didon, besili bir hindinin sırtından yemek yedi."],
+["Si six scies scient six cyprès, six cents scies scient six cents cyprès.","Altı testere altı servi keserse, altı yüz testere altı yüz servi keser."],
+["Les chaussettes de l'archiduchesse sont-elles sèches, archi-sèches ?","Arşidüşesin çorapları kuru mu, bembeyaz kuru mu?"],
+["Je veux et j'exige d'exquises excuses.","Zarif özürler istiyorum ve talep ediyorum."],
+["Pierre pique plusieurs petits pois.","Pierre birkaç küçük bezelyeyi çatallıyor."],
+];
+let P2={tab:'rgl',v:-1,rate:.6,res:null,msg:'',listening:false};
+function rPr2(){
+  const hd=`<button class="ghost sm" id="bk">← Çalış</button>`;
+  const chips=`<div class="row" style="margin:8px 0"><button class="chip ${P2.tab==='rgl'?'sel':''}" data-t="rgl">📖 Okunuş Rehberi</button><button class="chip ${P2.tab==='vir'?'sel':''}" data-t="vir">🌀 Virelangue</button></div>`;
+  const tabs=()=>document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{try{REC&&REC.abort();}catch(e){}P2={tab:b.dataset.t,v:-1,rate:.6,res:null,msg:'',listening:false};rPr2();});
+  const sayb=()=>document.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>say(b.dataset.say,.7));
+  if(P2.tab==='rgl'){
+    $('#app').innerHTML=hd+`<h2>📖 Okunuş Rehberi</h2><p class="sub">Harflerin Fransızcada nasıl okunduğu. Dokun ve dinle.</p>${chips}`+RGL.map(r=>`<div class="card"><div style="font-size:20px;font-weight:800">${esc(r[0])}</div><div>${esc(r[1])}</div><div class="row" style="margin-top:6px;flex-wrap:wrap">${r[3].map(w=>`<button class="ghost sm" data-say="${esc(w)}">🔊 ${esc(w)}</button>`).join('')}</div></div>`).join('');
+    $('#bk').onclick=toWork;tabs();sayb();return;}
+  if(P2.v<0){
+    $('#app').innerHTML=hd+`<h2>🌀 Virelangue</h2><p class="sub">Fransızca tekerlemeler. Yavaş başla, hızlan.</p>${chips}`+VIR.map((x,i)=>`<button class="ghost" data-v="${i}" style="width:100%;text-align:left;margin-bottom:6px">${esc(x[0])}<br><span class="small">${esc(x[1])}</span></button>`).join('');
+    $('#bk').onclick=toWork;tabs();document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{P2.v=+b.dataset.v;P2.res=null;P2.msg='';rPr2();});return;}
+  const it=VIR[P2.v],r=P2.res;
+  const shown=r?it[0].split(' ').map(w=>{const nw=normW(w)[0];return `<span style="padding:1px 4px;border-radius:5px;background:${!nw||r.hit.has(nw)?'#d1fae5':'#fee2e2'}">${esc(w)}</span>`;}).join(' '):esc(it[0]);
+  $('#app').innerHTML=`<button class="ghost sm" id="bk">← Liste</button><h2>🌀 Virelangue</h2><div class="card"><p style="font-size:21px;line-height:1.5;margin:6px 0">${shown}</p><p class="small">🇹🇷 ${esc(it[1])}</p>
+  <div class="row" style="margin:8px 0"><span class="small">Hız:</span>${[['🐢',.5],['🚶',.7],['🏃',.9]].map(x=>`<button class="chip ${P2.rate===x[1]?'sel':''}" data-r="${x[1]}">${x[0]} ${x[1]}x</button>`).join('')}</div><button class="ghost" id="pl">🔊 Dinle</button></div>
+  ${SR?`<div class="row"><button id="mic" ${P2.listening?'disabled':''} style="flex:1;padding:16px;font-size:18px;background:${P2.listening?'#db2777':'var(--pri)'}">${P2.listening?'🎙️ Dinliyorum…':'🎤 Söyle'}</button></div>`:'<div class="card small">Konuşma tanıma bu tarayıcıda yok; sadece dinleyip tekrar edebilirsin.</div>'}
+  ${P2.msg?`<div class="card" style="background:#fffbeb">${esc(P2.msg)}</div>`:''}${r?`<div class="card" style="background:${r.ok?'#ecfdf5':'#fffbeb'}">${r.ok?'✅ Harika!':'🟠 Biraz daha yavaş dene.'} Skor: <b>%${r.sc}</b><p class="small">Duyduğum: “${esc(r.heard)}”</p></div>`:''}
+  <div class="row"><button class="ghost" id="pv">← Önceki</button><button id="nx">Sonraki ➜</button></div>`;
+  $('#bk').onclick=()=>{try{REC&&REC.abort();}catch(e){}P2.v=-1;P2.res=null;P2.msg='';rPr2();};
+  document.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{P2.rate=+b.dataset.r;rPr2();});
+  $('#pl').onclick=()=>say(it[0],P2.rate);
+  $('#nx').onclick=()=>{P2.v=(P2.v+1)%VIR.length;P2.res=null;P2.msg='';rPr2();};
+  $('#pv').onclick=()=>{P2.v=(P2.v-1+VIR.length)%VIR.length;P2.res=null;P2.msg='';rPr2();};
+  if($('#mic'))$('#mic').onclick=()=>{
+    try{speechSynthesis.cancel();}catch(e){}
+    let got=false;REC=new SR();REC.lang='fr-FR';REC.interimResults=false;REC.maxAlternatives=3;
+    REC.onresult=ev=>{got=true;const b=normW(it[0]);let best=null;
+      for(let i=0;i<ev.results[0].length;i++){const h=ev.results[0][i].transcript,a=normW(h),L=lcs(a,b),sc=Math.round(L.n/b.length*100);if(!best||sc>best.sc)best={heard:h,sc,hit:new Set(b.filter((_,j)=>L.B.has(j)))};}
+      const ok=best.sc>=70;if(ok){xpa(4);cnt('speak');}else xpa(1);
+      P2.res={ok,sc:best.sc,heard:best.heard,hit:best.hit};P2.listening=false;P2.msg='';if(view==='pr2')rPr2();};
+    REC.onerror=ev=>{got=true;P2.listening=false;P2.msg=ev.error==='not-allowed'||ev.error==='service-not-allowed'?'Mikrofon izni verilmedi. Tarayıcı ayarlarından izin ver.':ev.error==='no-speech'?'Ses duyamadım, tekrar dene.':'Bir sorun oldu ('+ev.error+'). Tekrar dene.';if(view==='pr2')rPr2();};
+    REC.onend=()=>{if(!got&&view==='pr2'){P2.listening=false;P2.msg='Ses duyamadım, tekrar dene.';rPr2();}};
+    try{REC.start();P2.listening=true;P2.msg='';rPr2();}catch(e){P2.listening=false;}
+  };
+}
+
 // ---- Atasözleri, Fransız kültürü ve Türkçedeki Fransızca kelimeler ----
 const PRV=[
 ["Petit à petit, l'oiseau fait son nid.","Damlaya damlaya göl olur.","Küçük adımlarla büyük iş yapılır."],
@@ -1557,7 +1642,402 @@ function rNum(){
 }
 
 // ---- telaffuz ----
-const PRN=[{"t":"u /y/ ve ou /u/ — iki ayrı ünlü","tip":"'u' için dudakları 'ou' (u) gibi yuvarla ama dilin ucunu 'i' deki yerde tut (Türkçe 'ü'ye çok yakın). 'ou' ise Türkçe 'u'dur.","p":[["rue","roue"],["tu","tout"],["vu","vous"],["sur","sourd"],["lu","loup"],["pu","pou"]]},{"t":"Nazal ünlüler: on, an, in","tip":"Burun yolundan geçen ünlüler; 'n' sesi ayrıca söylenmez. on = dudaklar yuvarlak, an = ağız geniş açık, in = ağız yarı açık, 'ê' gibi.","p":[["bon","banc"],["vent","vin"],["blond","blanc"],["lent","long"],["temps","ton"],["plan","plein"]]},{"t":"r /ʁ/ ve l","tip":"Fransızca 'r' boğazın arkasından, hafif sürtünmeyle çıkar (Türkçe 'r' gibi dil titremez). 'l' ise dil ucu üst dişlerin arkasına değer.","p":[["rue","lu"],["riz","lit"],["roi","loi"],["rire","lire"],["rond","long"],["rit","lit"]]},{"t":"eu ve ou","tip":"'eu' için dudakları yuvarla ama dil 'e' konumunda (Türkçe 'ö'ye yakın). 'ou' Türkçe 'u' gibidir.","p":[["peur","pour"],["deux","doux"],["sœur","sous"],["peu","pou"],["veut","vous"]]},{"t":"s ve z (iki ünlü arasında)","tip":"İki ünlü arasındaki tek 's' /z/ okunur (poison); 'ss' ise /s/ okunur (poisson).","p":[["poisson","poison"],["dessert","désert"],["coussin","cousin"],["russe","ruse"]]},{"t":"ch /ʃ/ ve s","tip":"'ch' Türkçe 'ş' gibidir (chat = şa). 's' ise normal 's'.","p":[["chat","sa"],["chou","sous"],["chant","sans"],["cher","serre"]]},{"t":"é, è ve e (şva)","tip":"'é' dar ve gergin, 'è' daha açık, sondaki 'e' çok zayıf ya da sessiz. 'e' + kapalı hece: 'le, je' kısa 'ö' gibi.","p":[["fée","fait"],["thé","tes"],["blé","blaise"],["nez","nais"]]}];
+const PRN=[
+{
+"t": "u /y/ ve ou /u/ — iki ayrı ünlü",
+"tip": "'u' için dudakları 'ou' (u) gibi yuvarla ama dilin ucunu 'i' deki yerde tut (Türkçe 'ü'ye çok yakın). 'ou' ise Türkçe 'u'dur.",
+"p": [
+[
+"rue",
+"roue"
+],
+[
+"tu",
+"tout"
+],
+[
+"vu",
+"vous"
+],
+[
+"sur",
+"sourd"
+],
+[
+"lu",
+"loup"
+],
+[
+"pu",
+"pou"
+]
+]
+},
+{
+"t": "Nazal ünlüler: on, an, in",
+"tip": "Burun yolundan geçen ünlüler; 'n' sesi ayrıca söylenmez. on = dudaklar yuvarlak, an = ağız geniş açık, in = ağız yarı açık, 'ê' gibi.",
+"p": [
+[
+"bon",
+"banc"
+],
+[
+"vent",
+"vin"
+],
+[
+"blond",
+"blanc"
+],
+[
+"lent",
+"long"
+],
+[
+"temps",
+"ton"
+],
+[
+"plan",
+"plein"
+]
+]
+},
+{
+"t": "r /ʁ/ ve l",
+"tip": "Fransızca 'r' boğazın arkasından, hafif sürtünmeyle çıkar (Türkçe 'r' gibi dil titremez). 'l' ise dil ucu üst dişlerin arkasına değer.",
+"p": [
+[
+"rue",
+"lu"
+],
+[
+"riz",
+"lit"
+],
+[
+"roi",
+"loi"
+],
+[
+"rire",
+"lire"
+],
+[
+"rond",
+"long"
+],
+[
+"rit",
+"lit"
+]
+]
+},
+{
+"t": "eu ve ou",
+"tip": "'eu' için dudakları yuvarla ama dil 'e' konumunda (Türkçe 'ö'ye yakın). 'ou' Türkçe 'u' gibidir.",
+"p": [
+[
+"peur",
+"pour"
+],
+[
+"deux",
+"doux"
+],
+[
+"sœur",
+"sous"
+],
+[
+"peu",
+"pou"
+],
+[
+"veut",
+"vous"
+]
+]
+},
+{
+"t": "s ve z (iki ünlü arasında)",
+"tip": "İki ünlü arasındaki tek 's' /z/ okunur (poison); 'ss' ise /s/ okunur (poisson).",
+"p": [
+[
+"poisson",
+"poison"
+],
+[
+"dessert",
+"désert"
+],
+[
+"coussin",
+"cousin"
+],
+[
+"russe",
+"ruse"
+]
+]
+},
+{
+"t": "ch /ʃ/ ve s",
+"tip": "'ch' Türkçe 'ş' gibidir (chat = şa). 's' ise normal 's'.",
+"p": [
+[
+"chat",
+"sa"
+],
+[
+"chou",
+"sous"
+],
+[
+"chant",
+"sans"
+],
+[
+"cher",
+"serre"
+]
+]
+},
+{
+"t": "é, è ve e (şva)",
+"tip": "'é' dar ve gergin, 'è' daha açık, sondaki 'e' çok zayıf ya da sessiz. 'e' + kapalı hece: 'le, je' kısa 'ö' gibi.",
+"p": [
+[
+"fée",
+"fait"
+],
+[
+"thé",
+"tes"
+],
+[
+"blé",
+"blaise"
+],
+[
+"nez",
+"nais"
+]
+]
+},
+{
+"t": "j /ʒ/ ve ch /ʃ/",
+"tip": "'j' Türkçe 'j' (jale) gibi, 'ch' ise 'ş' gibidir. İkisinde de dil aynı yerde, fark sesin titreşmesinde: j titreşimli, ch titreşimsiz.",
+"p": [
+[
+"jour",
+"chou"
+],
+[
+"je",
+"chez"
+],
+[
+"joue",
+"chou"
+],
+[
+"jambon",
+"champ"
+],
+[
+"manger",
+"mâcher"
+],
+[
+"Jean",
+"chant"
+]
+]
+},
+{
+"t": "gn /ɲ/ ve n",
+"tip": "'gn' 'ny' gibi söylenir (dilin ortası damağa değer). Burun ünlüsüyle karıştırma.",
+"p": [
+[
+"ligne",
+"lin"
+],
+[
+"vigne",
+"vin"
+],
+[
+"peigne",
+"pain"
+],
+[
+"campagne",
+"camp"
+],
+[
+"agneau",
+"anneau"
+]
+]
+},
+{
+"t": "i ve é",
+"tip": "'i' dar ve ince bir sestir, 'é' ise biraz daha açık ve gergin.",
+"p": [
+[
+"si",
+"ses"
+],
+[
+"lit",
+"les"
+],
+[
+"nid",
+"nez"
+],
+[
+"dit",
+"dé"
+],
+[
+"pris",
+"pré"
+]
+]
+},
+{
+"t": "oi /wa/ ve ou /u/",
+"tip": "'oi' iki sesli bir birleşimdir: 'ua'. 'ou' ise tek ve uzun bir 'u'.",
+"p": [
+[
+"roi",
+"roue"
+],
+[
+"moi",
+"mou"
+],
+[
+"toit",
+"tout"
+],
+[
+"foi",
+"fou"
+],
+[
+"voix",
+"vous"
+]
+]
+},
+{
+"t": "t ve d",
+"tip": "'t' titreşimsiz (soluk verir gibi), 'd' titreşimli. Dilin ucu üst dişlerin arkasında.",
+"p": [
+[
+"tort",
+"dort"
+],
+[
+"temps",
+"dans"
+],
+[
+"tu",
+"du"
+],
+[
+"tant",
+"dent"
+],
+[
+"toi",
+"doigt"
+]
+]
+},
+{
+"t": "p ve b",
+"tip": "'p' sesin patlamasıyla birlikte hafif soluk verilir; 'b' titreşimli. Türkçe gibi.",
+"p": [
+[
+"pain",
+"bain"
+],
+[
+"pas",
+"bas"
+],
+[
+"pont",
+"bon"
+],
+[
+"poire",
+"boire"
+],
+[
+"peau",
+"beau"
+]
+]
+},
+{
+"t": "f ve v",
+"tip": "'f' titreşimsiz, 'v' titreşimli. Üst dişler alt dudağa değer.",
+"p": [
+[
+"fin",
+"vin"
+],
+[
+"faux",
+"veau"
+],
+[
+"fer",
+"verre"
+],
+[
+"fois",
+"voix"
+],
+[
+"file",
+"ville"
+]
+]
+},
+{
+"t": "k ve g",
+"tip": "'k' titreşimsiz, 'g' titreşimli. Dilin arkası damağa değer.",
+"p": [
+[
+"car",
+"gare"
+],
+[
+"cou",
+"goût"
+],
+[
+"quai",
+"gai"
+],
+[
+"coûte",
+"goutte"
+],
+[
+"quand",
+"gant"
+]
+]
+}
+];
 let PN=null;
 function rPron(){
   const hd=`<button class="ghost sm" id="bk">← Çalış</button>`;
