@@ -114,7 +114,7 @@ function rCards(){
   const w=d[order[ci%order.length]];
   $('#app').innerHTML=`<h2>🃏 Kelime Kartları</h2>${chips()}<div style="margin-top:8px">${tchips()}</div>
   <div class="card flash" id="fl">${flip?`${emoBig(w.w)}<div class="w" style="font-size:26px">${esc(w.tr)}</div>${ipaLine(w.w)}${exHtml(w)}`:`${emoBig(w.w)}<div class="w">${esc(w.w)}</div>${ipaLine(w.w)}<div class="small">Çevirmek için dokun</div>`}</div>
-  <div class="row"><button class="ghost" id="sp" ${canSay()?'':'hidden'}>🔊 Dinle</button><button class="ghost" id="ag">↻ Tekrar</button><button class="ghost" id="nbk">📒 Deftere</button><button id="kn">✓ Biliyorum</button></div>
+  <div class="row"><button class="ghost" id="sp" ${canSay()?'':'hidden'}>🔊 Dinle</button><button class="ghost" id="ag">↻ Tekrar</button><button class="ghost" id="nbk">📒 Deftere</button><button class="ghost" id="pv">← Önceki</button><button class="ghost" id="sk">Atla →</button><button id="kn">✓ Biliyorum</button></div>
   <p class="small">${ci%order.length+1} / ${order.length} • ✅ ${d.filter(x=>S.known[x.w]).length} biliyorum</p>`;
   wire();
   $('#fl').onclick=()=>{flip=!flip;if(flip)say(w.w);rCards();};
@@ -122,6 +122,8 @@ function rCards(){
   $('#nbk').onclick=()=>toast(nbAdd(w.w,w.tr,w.ex)?'📒 Deftere eklendi':'Zaten defterinde');
   const next=()=>{ci++;flip=false;rCards();};
   $('#ag').onclick=()=>{delete S.known[w.w];save();next();};
+  $('#sk').onclick=next;
+  $('#pv').onclick=()=>{ci=(ci-1+order.length)%order.length;flip=false;rCards();};
   $('#kn').onclick=()=>{S.known[w.w]=1;bump();next();};
 }
 async function genWords(){
