@@ -2423,7 +2423,7 @@ async function rPic(){
 function rExam(){
   const d=DATA[CUR.l],qs=d.exam.q,E=CUR;
   if(E.k>=qs.length){
-    const pts=E.sc*Math.round(100/qs.length),pass=pts>=d.exam.pass;if(S.ex[CUR.l]===undefined||pts>S.ex[CUR.l])S.ex[CUR.l]=pts;bump();save();
+    const pts=Math.round(E.sc*100/qs.length),pass=pts>=d.exam.pass;if(S.ex[CUR.l]===undefined||pts>S.ex[CUR.l])S.ex[CUR.l]=pts;bump();save();
     const nx=NEXT[d.level];
     $('#app').innerHTML=`<h2>🎓 Sınav sonucu</h2><div class="card" style="text-align:center"><div style="font-size:48px;font-weight:800">${pts}</div><div>${E.sc} / ${qs.length} doğru</div><p><b>${pass?'🎉 Geçtin!':'Baraj %80. Biraz daha çalışıp tekrar dene 💪'}</b></p></div>${pass&&nx?`<button id="up">${nx} seviyesine geç ➜</button> `:''}<button class="ghost" id="bk">Hikâyelere dön</button>`;
     if($('#up'))$('#up').onclick=()=>{S.lvl=nx;save();view='story';render();};
