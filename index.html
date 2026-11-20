@@ -93,10 +93,10 @@ function pv(u){try{let pick=null;let sv=null;try{sv=localStorage.getItem('vc_'+V
 let view='home';
 const HASNET=typeof Peer!=='undefined';
 const NAV=[['home','🏠','Ana'],['story','📖','Hikâye'],['work','🧠','Çalış']].concat(HASNET?[['duel','⚔️','Yarış']]:[],[['prog','📊','İlerleme']]);
-const WORKV=['cards','quiz','nb','nbr','dict','speak','cloze','mis','tr','irr','dlg','gr','pic','ph','em','num','pron','ten','rdy','gen','conj','mq','cult','pr2','sen','wri','plan','srs'];
+const WORKV=['cards','quiz','nb','nbr','dict','speak','cloze','mis','tr','irr','dlg','gr','pic','ph','em','num','pron','ten','rdy','gen','conj','mq','cult','pr2','sen','wri','plan','srs','lis'];
 function renderNav(){$('#nav').innerHTML=NAV.map(n=>`<button data-v="${n[0]}" class="${view===n[0]||(view==='test'&&n[0]==='home')||(SUBV.includes(view)&&n[0]==='story')||(WORKV.includes(view)&&n[0]==='work')?'on':''}"><b>${n[1]}</b>${n[2]}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{view=b.dataset.v;render();});}
-function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,gen:rGen,conj:rConj,mq:()=>rMq(MQ&&MQ.id||'hom'),cult:rCult,pr2:rPr2,sen:rSen,wri:rWri,plan:rPlan,srs:rSrs,prog:rProg})[view]();window.scrollTo(0,0);}
+function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,gen:rGen,conj:rConj,mq:()=>rMq(MQ&&MQ.id||'hom'),cult:rCult,pr2:rPr2,sen:rSen,wri:rWri,plan:rPlan,srs:rSrs,lis:rLis,prog:rProg})[view]();window.scrollTo(0,0);}
 const chips=()=>`<div class="row">${LEVELS.map(l=>`<button class="chip ${l===S.lvl?'sel':''}" data-l="${l}">${l}</button>`).join('')}</div>`;
 const tchips=()=>`<div class="row">${Object.entries(TOPICS).map(([k,v])=>`<button class="chip ${k===S.topic?'sel':''}" data-t="${k}">${v.ic} ${v.n}</button>`).join('')}</div>`;
 function wire(){document.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{S.lvl=b.dataset.l;save();render();});document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{S.topic=b.dataset.t;save();render();});}
@@ -798,10 +798,11 @@ function rWork(){
   <button id="w25" style="grid-column:span 2">🎭 Gündelik Durumlar</button>
   <button id="w26" style="grid-column:span 2">📝 Yazma Pratiği</button>
   <button id="w28" style="grid-column:span 2">🔁 Aralıklı Tekrar</button>
+  <button id="w29" style="grid-column:span 2">🎧 Dinleme</button>
   <button id="w27" style="grid-column:span 2">📅 Bugünün Planı</button></div>`;
   wire();
   const go=(id,v,f)=>{const el=$('#'+id);if(el)el.onclick=()=>{view=v;if(f)f();render();};};
-  go('w1','nb');go('w2','dict');go('w3','speak');go('w5','mis',()=>{MR=null;});go('w6','cards');go('w7','quiz',()=>{qz=null;});go('w8','tr');go('w9','irr',()=>{IR=null;});go('w10','dlg',()=>{if(DL)DL.sel=-1;});go('w11','gr',()=>{if(GR)GR.sel=-1;});go('w12','pic',()=>{PQ=null;});go('w13','ph',()=>{PH=null;});go('w14','em',()=>{EM=null;});go('w15','num',()=>{NQ=null;});go('w16','pron',()=>{PN=null;});go('w17','ten',()=>{TQ2=null;});go('w18','rdy',()=>{RDY=null;});go('w19','gen',()=>{GN=null;});go('w20','conj',()=>{CJ=null;});go('w25','sen',()=>{SN=null;});go('w26','wri',()=>{WR=null;});go('w27','plan');go('w28','srs',()=>{SR2=null;});go('w24','pr2',()=>{P2={tab:'rgl',v:-1,rate:.6,res:null,msg:'',listening:false};});go('w23','cult',()=>{CU={tab:'prv',q:null};});go('w21','mq',()=>{MQ={id:'hom',items:mqItems('hom'),k:0,ok:0,first:true,done:false};});go('w22','mq',()=>{MQ={id:'lia',items:mqItems('lia'),k:0,ok:0,first:true,done:false};});
+  go('w1','nb');go('w2','dict');go('w3','speak');go('w5','mis',()=>{MR=null;});go('w6','cards');go('w7','quiz',()=>{qz=null;});go('w8','tr');go('w9','irr',()=>{IR=null;});go('w10','dlg',()=>{if(DL)DL.sel=-1;});go('w11','gr',()=>{if(GR)GR.sel=-1;});go('w12','pic',()=>{PQ=null;});go('w13','ph',()=>{PH=null;});go('w14','em',()=>{EM=null;});go('w15','num',()=>{NQ=null;});go('w16','pron',()=>{PN=null;});go('w17','ten',()=>{TQ2=null;});go('w18','rdy',()=>{RDY=null;});go('w19','gen',()=>{GN=null;});go('w20','conj',()=>{CJ=null;});go('w25','sen',()=>{SN=null;});go('w26','wri',()=>{WR=null;});go('w27','plan');go('w28','srs',()=>{SR2=null;});go('w29','lis',()=>{LS=null;});go('w24','pr2',()=>{P2={tab:'rgl',v:-1,rate:.6,res:null,msg:'',listening:false};});go('w23','cult',()=>{CU={tab:'prv',q:null};});go('w21','mq',()=>{MQ={id:'hom',items:mqItems('hom'),k:0,ok:0,first:true,done:false};});go('w22','mq',()=>{MQ={id:'lia',items:mqItems('lia'),k:0,ok:0,first:true,done:false};});
 }
 // ---- ilerleme ----
 const TOT={A1:20,A2:20,B1:14,B2:16,C1:8,C2:5};
@@ -1360,6 +1361,42 @@ function rConj(){
   $('#ck').onclick=chk;$('#a').onkeydown=e=>{if(e.key==='Enter')chk();};
 }
 
+// ---- Dinleme anlama: dinle, soruları cevapla ----
+let LS=null;
+async function rLis(){
+  const hd=`<button class="ghost sm" id="bk">← Çalış</button>`,cl=t=>String(t).replace(ZW,'');
+  if(!LS||LS.lvl!==S.lvl){
+    $('#app').innerHTML=hd+`<h2>🎧 Dinleme</h2>${chips()}<div class="card small">Yükleniyor…</div>`;wire();$('#bk').onclick=toWork;
+    const lv=S.lvl,d=await loadLevel(lv);if(view!=='lis')return;
+    if(!d||!d.rd||!d.rd.length){$('#app').innerHTML=hd+`<h2>🎧 Dinleme</h2>${chips()}<div class="card">${!LK[lv]?'Bu seviye üyeliğine dahil değil.':'Yüklenemedi. İnternet bağlantını kontrol et.'}</div>`;wire();$('#bk').onclick=toWork;return;}
+    LS={lvl:lv,i:-1};}
+  if(!canWeb){$('#app').innerHTML=hd+`<h2>🎧 Dinleme</h2><div class="card">Bu cihaz/tarayıcı sesli okumayı desteklemiyor. Chrome (Android) veya Safari (iPhone) ile dene.</div>`;$('#bk').onclick=toWork;return;}
+  const L=DATA[LS.lvl].rd,n=L.length;S.lsd=S.lsd||{};
+  if(LS.i<0){
+    $('#app').innerHTML=hd+`<h2>🎧 Dinleme</h2>${chips()}<p class="sub">${LS.lvl} • Metni yalnızca dinlersin, yazıyı görmeden soruları cevaplarsın. En az 2 kez dinle.</p>`+L.map((x,i)=>{const b=S.lsd[LS.lvl+':'+i];return `<button class="ghost" data-i="${i}" style="width:100%;text-align:left;margin-bottom:6px">${b!==undefined?'✅':'🎧'} Metin ${i+1}${b!==undefined?` <span class="small">• en iyi ${b}/3</span>`:''}</button>`;}).join('');
+    wire();$('#bk').onclick=toWork;
+    document.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{const i=+b.dataset.i,x=L[i];
+      const others=shuffle(L.filter((_,j)=>j!==i).map(y=>cl(y.t))).slice(0,2);
+      LS.i=i;LS.plays=0;LS.peek=false;LS.ans={};
+      LS.qs=[{s:'Bu metnin başlığı hangisi?',o:shuffle([cl(x.t)].concat(others)),a:cl(x.t)}].concat(x.q.map(q=>({s:cl(q.s),o:['Doğru','Yanlış'],a:q.a?'Doğru':'Yanlış'})));
+      rLis();});return;}
+  const x=L[LS.i],key=LS.lvl+':'+LS.i,sents=(cl(x.x).match(/[^.!?]+[.!?]+/g)||[cl(x.x)]).map(t=>t.trim());
+  const nq=LS.qs.length,done=Object.keys(LS.ans).length===nq,ok=LS.qs.filter((q,i)=>LS.ans[i]===q.a).length;
+  if(done&&!LS.fin){LS.fin=true;if(!LS.peek){if(S.lsd[key]===undefined||ok>S.lsd[key])S.lsd[key]=ok;bump(5);cnt('lis',ok);xpa(ok*2);save();}}
+  $('#app').innerHTML=`<button class="ghost sm" id="bk">← Metinler</button><h2>🎧 Metin ${LS.i+1} / ${n}</h2><p class="sub">${LS.lvl} • ${LS.plays} kez dinledin</p>
+  <div class="card" style="text-align:center"><div class="row" style="justify-content:center"><button id="pn" style="font-size:18px;padding:12px 20px">▶ Dinle</button><button class="ghost" id="ps">🐢 Yavaş</button></div></div>
+  ${LS.qs.map((q,i)=>{const a=LS.ans[i];return `<div class="card"><b>${i+1}. ${esc(q.s)}</b><div style="margin-top:6px">${q.o.map(o=>`<button class="opt ${a!==undefined?(o===q.a?'ok':(o===a?'bad':'')):''}" data-q="${i}" data-o="${esc(o)}" ${a!==undefined?'disabled':''}>${esc(o)}</button>`).join('')}</div></div>`;}).join('')}
+  ${done||LS.peek?`<div class="card"><b>${done?`Skor: ${ok} / ${nq}`:'Metin'}</b><p style="line-height:1.7;font-size:17px">${esc(cl(x.x))}</p><div class="small">${x.v.map(v=>esc(cl(v.w))+' — '+esc(cl(v.tr))).join('<br>')}</div></div><div class="row"><button class="ghost" id="rp">Tekrar dene</button><button id="nx">Sonraki metin ➜</button></div>`:`<div class="row"><button class="ghost" id="pk">👁️ Metni göster (puan yok)</button></div>`}`;
+  $('#bk').onclick=()=>{LS.i=-1;rLis();};
+  const play=r=>{LS.plays++;playSeq(sents,r,()=>{},()=>{});};
+  $('#pn').onclick=()=>{play(.85);};$('#ps').onclick=()=>{play(.6);};
+  document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{LS.ans[+b.dataset.q]=b.dataset.o;rLis();});
+  if($('#pk'))$('#pk').onclick=()=>{LS.peek=true;rLis();};
+  if($('#rp'))$('#rp').onclick=()=>{LS.ans={};LS.fin=false;LS.plays=0;LS.peek=false;rLis();};
+  if($('#nx'))$('#nx').onclick=()=>{const j=(LS.i+1)%n,y=L[j];const others=shuffle(L.filter((_,k)=>k!==j).map(z=>cl(z.t))).slice(0,2);
+    LS.i=j;LS.plays=0;LS.peek=false;LS.ans={};LS.fin=false;LS.qs=[{s:'Bu metnin başlığı hangisi?',o:shuffle([cl(y.t)].concat(others)),a:cl(y.t)}].concat(y.q.map(q=>({s:cl(q.s),o:['Doğru','Yanlış'],a:q.a?'Doğru':'Yanlış'})));rLis();};
+}
+
 // ---- Aralıklı tekrar (Leitner kutuları) ----
 const SRI=[0,1,2,4,8,16,35]; // kutu → sonraki tekrar için gün
 const srDay=()=>Math.floor((Date.now()+3*36e5)/864e5);
@@ -1560,6 +1597,7 @@ const PLN=[
 ["👂 Dinle ve Yaz: bir set","dict",()=>{DX=null;}],
 ["🎭 Bir gündelik durum canlandır","sen",()=>{SN=null;}],
 ["🗣️ Telaffuz: bir ses grubu","pron",()=>{PN=null;}],
+["🎧 Bir dinleme metni","lis",()=>{LS=null;}],
 ["📰 Bir kısa metin oku","rdy",()=>{RDY=null;}],
 ];
 function rPlan(){
