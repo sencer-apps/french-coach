@@ -401,10 +401,12 @@ async function rStoryHome(){
   const sd=S.sd,bd=S.bd,pd=S.pd,e=S.ex[S.lvl];
   $('#app').innerHTML=`<h2>📖 Hikâye Yolculuğu</h2><p class="sub">Kısa Fransızca hikâyeler.</p>${chips()}
   <div class="card"><b>${d.level} • ${d.stories.length} hikâye</b><p class="small">Okudun: ${d.stories.filter(s=>sd[s.n]).length} • Cümle kurdun: ${d.stories.filter(s=>bd[s.n]).length}</p>
-  ${d.stories.map((s,i)=>`<button class="opt" data-st="${i}">${bd[s.n]?'✅':sd[s.n]?'📗':'📘'} ${s.n}. ${esc(s.title.split(' / ')[0])}<br><span class="small">${esc(s.focus)}</span></button>`).join('')}</div>`;
+  ${d.stories.map((s,i)=>`<button class="opt" data-st="${i}">${bd[s.n]?'✅':sd[s.n]?'📗':'📘'} ${s.n}. ${esc(s.title.split(' / ')[0])}<br><span class="small">${esc(s.focus)}</span></button>`).join('')}</div>
+  <div class="card"><b>🎓 ${d.level} Seviye Sınavı (${d.exam.q.length} soru)</b><p class="sub">Geçme barajı: %80.${e!==undefined?` En iyi puanın: <b>${e}</b>/100`:''}</p><button id="gx">${e!==undefined?'Sınavı tekrarla':'Sınava başla'}</button></div>`;
   wire();
   document.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{CUR={l:S.lvl,i:+b.dataset.st};view='reader';render();});
   document.querySelectorAll('[data-pr]').forEach(b=>b.onclick=()=>{CUR={l:S.lvl,i:+b.dataset.pr,k:0,ok:0,res:null};view='prac';render();});
+  $('#gx').onclick=()=>{CUR={l:S.lvl,k:0,sc:0,sel:null,order:null};view='exam';render();};
 }
 let showTR=false;
 // ================= ÖĞRENME ÖZELLİKLERİ (yapay zekâsız, tamamen cihazda) =================
