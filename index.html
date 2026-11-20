@@ -93,10 +93,10 @@ function pv(u){try{let pick=null;let sv=null;try{sv=localStorage.getItem('vc_'+V
 let view='home';
 const HASNET=typeof Peer!=='undefined';
 const NAV=[['home','🏠','Ana'],['story','📖','Hikâye'],['work','🧠','Çalış']].concat(HASNET?[['duel','⚔️','Yarış']]:[],[['prog','📊','İlerleme']]);
-const WORKV=['cards','quiz','nb','nbr','dict','speak','cloze','mis','tr','irr','dlg','gr','pic','ph','em','num','pron','ten','rdy','gen','conj','mq','cult','pr2'];
+const WORKV=['cards','quiz','nb','nbr','dict','speak','cloze','mis','tr','irr','dlg','gr','pic','ph','em','num','pron','ten','rdy','gen','conj','mq','cult','pr2','sen','wri','plan'];
 function renderNav(){$('#nav').innerHTML=NAV.map(n=>`<button data-v="${n[0]}" class="${view===n[0]||(view==='test'&&n[0]==='home')||(SUBV.includes(view)&&n[0]==='story')||(WORKV.includes(view)&&n[0]==='work')?'on':''}"><b>${n[1]}</b>${n[2]}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{view=b.dataset.v;render();});}
-function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,gen:rGen,conj:rConj,mq:()=>rMq(MQ&&MQ.id||'hom'),cult:rCult,pr2:rPr2,prog:rProg})[view]();window.scrollTo(0,0);}
+function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,gen:rGen,conj:rConj,mq:()=>rMq(MQ&&MQ.id||'hom'),cult:rCult,pr2:rPr2,sen:rSen,wri:rWri,plan:rPlan,prog:rProg})[view]();window.scrollTo(0,0);}
 const chips=()=>`<div class="row">${LEVELS.map(l=>`<button class="chip ${l===S.lvl?'sel':''}" data-l="${l}">${l}</button>`).join('')}</div>`;
 const tchips=()=>`<div class="row">${Object.entries(TOPICS).map(([k,v])=>`<button class="chip ${k===S.topic?'sel':''}" data-t="${k}">${v.ic} ${v.n}</button>`).join('')}</div>`;
 function wire(){document.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{S.lvl=b.dataset.l;save();render();});document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{S.topic=b.dataset.t;save();render();});}
@@ -794,10 +794,13 @@ function rWork(){
   <button id="w21" style="grid-column:span 2">🔤 Ses & Yazım (a/à, et/est…)</button>
   <button id="w22" style="grid-column:span 2">🔗 Bağlama (Liaison)</button>
   <button id="w23" style="grid-column:span 2">🇫🇷 Kültür & Deyimler</button>
-  <button id="w24" style="grid-column:span 2">📖 Okunuş Rehberi & Virelangue</button></div>`;
+  <button id="w24" style="grid-column:span 2">📖 Okunuş Rehberi & Virelangue</button>
+  <button id="w25" style="grid-column:span 2">🎭 Gündelik Durumlar</button>
+  <button id="w26" style="grid-column:span 2">📝 Yazma Pratiği</button>
+  <button id="w27" style="grid-column:span 2">📅 Bugünün Planı</button></div>`;
   wire();
   const go=(id,v,f)=>{const el=$('#'+id);if(el)el.onclick=()=>{view=v;if(f)f();render();};};
-  go('w1','nb');go('w2','dict');go('w3','speak');go('w5','mis',()=>{MR=null;});go('w6','cards');go('w7','quiz',()=>{qz=null;});go('w8','tr');go('w9','irr',()=>{IR=null;});go('w10','dlg',()=>{if(DL)DL.sel=-1;});go('w11','gr',()=>{if(GR)GR.sel=-1;});go('w12','pic',()=>{PQ=null;});go('w13','ph',()=>{PH=null;});go('w14','em',()=>{EM=null;});go('w15','num',()=>{NQ=null;});go('w16','pron',()=>{PN=null;});go('w17','ten',()=>{TQ2=null;});go('w18','rdy',()=>{RDY=null;});go('w19','gen',()=>{GN=null;});go('w20','conj',()=>{CJ=null;});go('w24','pr2',()=>{P2={tab:'rgl',v:-1,rate:.6,res:null,msg:'',listening:false};});go('w23','cult',()=>{CU={tab:'prv',q:null};});go('w21','mq',()=>{MQ={id:'hom',items:mqItems('hom'),k:0,ok:0,first:true,done:false};});go('w22','mq',()=>{MQ={id:'lia',items:mqItems('lia'),k:0,ok:0,first:true,done:false};});
+  go('w1','nb');go('w2','dict');go('w3','speak');go('w5','mis',()=>{MR=null;});go('w6','cards');go('w7','quiz',()=>{qz=null;});go('w8','tr');go('w9','irr',()=>{IR=null;});go('w10','dlg',()=>{if(DL)DL.sel=-1;});go('w11','gr',()=>{if(GR)GR.sel=-1;});go('w12','pic',()=>{PQ=null;});go('w13','ph',()=>{PH=null;});go('w14','em',()=>{EM=null;});go('w15','num',()=>{NQ=null;});go('w16','pron',()=>{PN=null;});go('w17','ten',()=>{TQ2=null;});go('w18','rdy',()=>{RDY=null;});go('w19','gen',()=>{GN=null;});go('w20','conj',()=>{CJ=null;});go('w25','sen',()=>{SN=null;});go('w26','wri',()=>{WR=null;});go('w27','plan');go('w24','pr2',()=>{P2={tab:'rgl',v:-1,rate:.6,res:null,msg:'',listening:false};});go('w23','cult',()=>{CU={tab:'prv',q:null};});go('w21','mq',()=>{MQ={id:'hom',items:mqItems('hom'),k:0,ok:0,first:true,done:false};});go('w22','mq',()=>{MQ={id:'lia',items:mqItems('lia'),k:0,ok:0,first:true,done:false};});
 }
 // ---- ilerleme ----
 const TOT={A1:20,A2:20,B1:14,B2:16,C1:8,C2:5};
@@ -1354,6 +1357,159 @@ function rConj(){
   const chk=()=>{const a=$('#a').value,ok=cjNorm(a)===cjNorm(c.a);if(ok){N.ok++;xpa(2);say(cjEl(c.p,c.a));}else misAdd({t:'x',q:inf+' — '+CJPT[c.p]+' ('+CJT[c.t]+')',o:[c.a,cjAns(c.v,c.t,(c.p+1)%6),cjAns(c.v,c.t,(c.p+2)%6),cjAns(c.v,c.t,(c.p+3)%6)].filter((x,i,A)=>A.indexOf(x)===i),a:c.a});
     N.res={a,ok};rConj();};
   $('#ck').onclick=chk;$('#a').onkeydown=e=>{if(e.key==='Enter')chk();};
+}
+
+// ---- Senaryolar, Yazma Pratiği, Günlük Plan ----
+const SEN=[
+["☕ Kafede sipariş",[
+["Bonjour, vous désirez ?","Merhaba, ne arzu edersiniz?","Je voudrais un café, s'il vous plaît.","Bir kahve istiyorum, lütfen.","Je n'ai pas de voiture.","Il pleut beaucoup aujourd'hui."],
+["Un café allongé ou un expresso ?","Uzun kahve mi, espresso mu?","Un expresso, s'il vous plaît.","Bir espresso lütfen.","J'habite à Lyon.","Nous sommes mardi."],
+["Et avec ceci ? Un croissant peut-être ?","Yanında? Belki bir kruvasan?","Oui, un croissant aussi, merci.","Evet, bir kruvasan da, teşekkürler.","Non, mon frère est grand.","Je cherche la gare."],
+["Sur place ou à emporter ?","Burada mı, paket mi?","Sur place, s'il vous plaît.","Burada, lütfen.","Il a vingt ans.","C'est ma sœur."],
+["Ça fait quatre euros cinquante.","4,50 euro tutuyor.","Voilà. Merci, bonne journée !","Buyurun. Teşekkürler, iyi günler!","Je ne parle pas chinois.","Elle est très fatiguée."]]],
+["🏥 Doktor randevusu",[
+["Cabinet du docteur Martin, bonjour.","Doktor Martin'in muayenehanesi, merhaba.","Bonjour, je voudrais prendre rendez-vous.","Merhaba, randevu almak istiyorum.","Bonjour, je voudrais une baguette.","Bonjour, où est la plage ?"],
+["C'est pour quelle raison ?","Hangi sebeple?","J'ai mal à la tête et de la fièvre.","Başım ağrıyor ve ateşim var.","J'ai acheté un pantalon.","Je travaille dans une banque."],
+["Demain à dix heures, ça vous convient ?","Yarın saat onda, size uyar mı?","Oui, c'est parfait, merci.","Evet, mükemmel, teşekkürler.","Non, j'aime le chocolat.","Hier, il faisait chaud."],
+["Votre nom, s'il vous plaît ?","Adınız lütfen?","Je m'appelle Ahmet Yılmaz.","Adım Ahmet Yılmaz.","J'ai deux chats.","Je vais au marché."],
+["Très bien, à demain, monsieur.","Çok iyi, yarın görüşmek üzere efendim.","À demain, merci beaucoup. Au revoir !","Yarın görüşürüz, çok teşekkürler. Hoşça kalın!","Bon appétit !","Joyeux anniversaire !"]]],
+["🏨 Otelde giriş",[
+["Bonsoir, bienvenue à l'hôtel.","İyi akşamlar, otelimize hoş geldiniz.","Bonsoir, j'ai une réservation au nom de Yılmaz.","İyi akşamlar, Yılmaz adına rezervasyonum var.","Bonsoir, je voudrais un kilo de pommes.","Bonsoir, il est quelle heure ?"],
+["Oui, une chambre double pour trois nuits ?","Evet, üç gece için çift kişilik oda mı?","Oui, c'est exact.","Evet, doğru.","Non, je suis étudiant.","Il fait froid ici."],
+["Voici votre clé. La chambre est au deuxième étage.","İşte anahtarınız. Oda ikinci katta.","Merci. Le petit-déjeuner est à quelle heure ?","Teşekkürler. Kahvaltı saat kaçta?","Merci. Je déteste le poisson.","Merci. Mon père est médecin."],
+["Le petit-déjeuner est servi de sept heures à dix heures.","Kahvaltı yedi ile on arası servis edilir.","Parfait. Y a-t-il le wifi dans la chambre ?","Güzel. Odada wifi var mı?","Parfait. J'ai soixante ans.","Parfait. Je suis né en mars."],
+["Oui, le code est sur la carte.","Evet, şifre kartın üzerinde.","Très bien, merci. Bonne soirée !","Çok iyi, teşekkürler. İyi akşamlar!","Très bien. Je prends le train.","Très bien. Elle chante bien."]]],
+["🚆 Tren bileti",[
+["Bonjour, je peux vous aider ?","Merhaba, yardımcı olabilir miyim?","Oui, je voudrais un billet pour Lyon.","Evet, Lyon'a bir bilet istiyorum.","Oui, j'ai mangé une pomme.","Oui, il est très grand."],
+["Aller simple ou aller-retour ?","Tek yön mü, gidiş-dönüş mü?","Un aller-retour, s'il vous plaît.","Gidiş-dönüş, lütfen.","Je m'appelle Marie.","Le ciel est bleu."],
+["Pour quelle date ?","Hangi tarih için?","Pour samedi matin, vers neuf heures.","Cumartesi sabahı, dokuz sularında.","Pour mon anniversaire de mariage hier.","Pour les chaussures rouges."],
+["Il y a un train à neuf heures dix. Ça vous va ?","Dokuz on'da bir tren var. Uygun mu?","Oui, très bien. C'est quel quai ?","Evet, çok iyi. Hangi peron?","Oui, j'aime le fromage. Il est où ?","Oui, il neige. C'est combien ?"],
+["Quai numéro quatre. Ça fait quarante-deux euros.","Dördüncü peron. 42 euro tutuyor.","Je paie par carte, voilà.","Kartla ödüyorum, buyurun.","Je suis fatigué, bonne nuit.","J'ai un chien noir."]]],
+["👗 Kıyafet alışverişi",[
+["Bonjour, vous cherchez quelque chose ?","Merhaba, bir şey mi arıyorsunuz?","Oui, je cherche une veste noire.","Evet, siyah bir ceket arıyorum.","Oui, j'habite près d'ici depuis hier soir.","Non, je suis en retard pour la neige."],
+["Quelle taille faites-vous ?","Kaç beden giyiyorsunuz?","Je fais du quarante-deux, je crois.","42 beden giyiyorum galiba.","Je fais la cuisine ce soir.","Je suis né en Turquie."],
+["Voici une veste de cette taille. Vous voulez l'essayer ?","Bu bedende bir ceket. Denemek ister misiniz?","Oui, où sont les cabines d'essayage ?","Evet, soyunma kabinleri nerede?","Oui, j'ai faim depuis midi.","Non, je préfère le thé."],
+["Alors, elle vous va ?","Peki, size oldu mu?","Elle est un peu grande. Vous l'avez en petit ?","Biraz büyük. Daha küçüğü var mı?","Elle est très gentille, merci.","Elle est partie à la mer."],
+["Oui, voilà. Elle coûte quatre-vingts euros.","Evet, buyurun. 80 euro.","Je la prends, merci.","Alıyorum, teşekkürler.","Je ne l'aime pas, il fait nuit.","Elle est née en juin."]]],
+["🧭 Yol sorma",[
+["Oui, bonjour ?","Evet, buyurun?","Excusez-moi, où est la gare, s'il vous plaît ?","Affedersiniz, gar nerede lütfen?","Excusez-moi, j'ai trente ans.","Pardon, je mange du pain."],
+["Allez tout droit, puis tournez à gauche.","Dümdüz gidin, sonra sola dönün.","D'accord. C'est loin d'ici ?","Tamam. Buradan uzak mı?","D'accord. Mon chat est malade.","D'accord. Il est midi et demi."],
+["Non, c'est à dix minutes à pied.","Hayır, yürüyerek on dakika.","Merci beaucoup, vous êtes très gentil.","Çok teşekkürler, çok naziksiniz.","Merci, je m'appelle Marc.","Merci, je n'ai pas soif demain."],
+["Il y a une pharmacie en face de la gare.","Garın karşısında bir eczane var.","Très bien. Et le bus pour le centre-ville ?","Çok iyi. Peki şehir merkezine otobüs?","Très bien. Il y a vingt pommes.","Très bien. Mon frère est parti."],
+["L'arrêt est juste à côté, devant le café.","Durak hemen yanında, kafenin önünde.","Parfait, merci. Bonne journée !","Mükemmel, teşekkürler. İyi günler!","Parfait. Je suis dentiste.","Parfait. Il pleut dans ma poche."]]],
+["🍽️ Restoranda",[
+["Bonsoir, vous avez réservé ?","İyi akşamlar, rezervasyonunuz var mı?","Oui, une table pour deux personnes au nom de Demir.","Evet, Demir adına iki kişilik masa.","Non, j'ai un grand sac.","Oui, je suis né en été."],
+["Voici la carte. Vous avez choisi ?","İşte menü. Seçtiniz mi?","Oui, je prends le poulet avec des frites.","Evet, patates kızartmalı tavuk alıyorum.","Oui, la gare est loin.","Non, c'est la deuxième rue."],
+["Et comme boisson ?","İçecek olarak?","Une carafe d'eau, s'il vous plaît.","Bir sürahi su, lütfen.","Un manteau bleu.","Mon cousin est ici."],
+["Tout se passe bien ? Ça vous plaît ?","Her şey yolunda mı? Beğendiniz mi?","Oui, c'est délicieux, merci.","Evet, çok lezzetli, teşekkürler.","Oui, c'est ma maison.","Non, j'ai vingt-cinq ans."],
+["Vous prenez un dessert ou un café ?","Tatlı veya kahve alır mısınız?","Non merci, l'addition, s'il vous plaît.","Hayır teşekkürler, hesap lütfen.","Oui, j'ai un train demain.","Non, il est sept heures."]]],
+["💊 Eczanede",[
+["Bonjour, je peux vous aider ?","Merhaba, yardımcı olabilir miyim?","Bonjour, j'ai mal à la gorge depuis deux jours.","Merhaba, iki gündür boğazım ağrıyor.","Bonjour, je cherche un hôtel.","Bonjour, c'est un grand arbre."],
+["Vous avez de la fièvre ?","Ateşiniz var mı?","Non, mais je tousse un peu.","Hayır, ama biraz öksürüyorum.","Non, j'aime le cinéma.","Oui, il est dix heures."],
+["Je vous conseille ces pastilles et du sirop.","Size bu pastilleri ve şurubu öneririm.","D'accord, comment je dois les prendre ?","Tamam, nasıl kullanmalıyım?","D'accord, je suis étudiant.","D'accord, ma voiture est rouge."],
+["Trois fois par jour, après les repas.","Günde üç kez, yemeklerden sonra.","Très bien. Ça fait combien ?","Çok iyi. Ne kadar tutuyor?","Très bien. Je viens de Paris.","Très bien. Nous sommes en hiver."],
+["Douze euros quarante, s'il vous plaît.","12,40 euro lütfen.","Voilà. Merci, au revoir !","Buyurun. Teşekkürler, hoşça kalın!","Voilà. J'ai un frère.","Voilà. C'est dimanche."]]],
+["✈️ Havaalanında",[
+["Bonjour, votre passeport et votre billet, s'il vous plaît.","Merhaba, pasaportunuz ve biletiniz lütfen.","Bonjour, les voici.","Merhaba, buyurun.","Bonjour, j'ai mangé hier.","Bonjour, je suis rouge."],
+["Vous avez des bagages à enregistrer ?","Kayıt ettirecek bagajınız var mı?","Oui, une valise.","Evet, bir bavul.","Oui, il est trois heures.","Non, mon père est là."],
+["Elle pèse vingt kilos, c'est parfait.","20 kilo, çok iyi.","Merci. À quelle porte dois-je aller ?","Teşekkürler. Hangi kapıya gitmeliyim?","Merci. Quel âge as-tu ?","Merci. Je suis allé au lit."],
+["Porte douze. L'embarquement commence à quatorze heures.","12. kapı. Biniş on dörtte başlıyor.","D'accord. Le vol a du retard ?","Tamam. Uçuş rötarlı mı?","D'accord. Elle est médecin.","D'accord. La lune est jolie."],
+["Non, il est à l'heure. Bon voyage !","Hayır, zamanında. İyi yolculuklar!","Merci, au revoir !","Teşekkürler, hoşça kalın!","Il fait froid, je crois.","Je n'ai pas de frère."]]],
+["👋 Yeni biriyle tanışma",[
+["Salut ! Je m'appelle Julie. Et toi ?","Selam! Adım Julie. Peki sen?","Salut Julie ! Moi, c'est Murat. Enchanté !","Selam Julie! Ben Murat. Memnun oldum!","Salut ! Il est tard maintenant.","Salut ! J'ai un chat gris."],
+["Tu viens d'où, Murat ?","Nerelisin, Murat?","Je viens de Turquie, d'Istanbul.","Türkiye'denim, İstanbul'dan.","J'aime beaucoup le pain.","Je suis sur le canapé."],
+["Ah, c'est super ! Tu habites ici depuis longtemps ?","Ah, harika! Uzun zamandır burada mı yaşıyorsun?","Non, depuis trois mois seulement.","Hayır, sadece üç aydır.","Oui, c'est mon frère.","Non, il est midi."],
+["Et tu fais quoi dans la vie ?","Peki ne iş yapıyorsun?","Je suis ingénieur. Et toi ?","Mühendisim. Peki sen?","Je suis dans la cuisine, merci.","Je suis très bien, il pleut."],
+["Moi, je suis professeure. On prend un café ?","Ben öğretmenim. Kahve içelim mi?","Avec plaisir ! Allons-y.","Memnuniyetle! Hadi gidelim.","Non, j'ai une voiture bleue.","Elle est partie hier."]]],
+];
+let SN=null;
+function rSen(){
+  const hd=`<button class="ghost sm" id="bk">← Çalış</button>`;
+  if(!SN)SN={s:-1};
+  if(SN.s<0){
+    $('#app').innerHTML=hd+`<h2>🎭 Gündelik Durumlar</h2><p class="sub">Gerçek hayattan konuşmalar. Karşındaki söyler, sen doğru cevabı seç.</p>`+SEN.map((x,i)=>`<button class="ghost" data-s="${i}" style="width:100%;text-align:left;margin-bottom:6px">${esc(x[0])} <span class="small">• ${x[1].length} adım</span></button>`).join('');
+    $('#bk').onclick=toWork;document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{const i=+b.dataset.s;SN={s:i,k:0,ok:0,first:true,done:false,ord:SEN[i][1].map(st=>shuffle([2,4,5]))};rSen();});return;}
+  const sc=SEN[SN.s],st=sc[1],n=st.length;
+  if(SN.k>=n){bump(5);cnt('sen',SN.ok);save();
+    $('#app').innerHTML=`<h2>🎉 Bitti!</h2><p class="sub">${esc(sc[0])}</p><div class="card" style="text-align:center"><div style="font-size:42px;font-weight:800">${SN.ok} / ${n}</div><p>cevabı ilk seferde doğru verdin</p></div><div class="row"><button id="ag">Tekrar</button><button class="ghost" id="bk">Durumlar</button></div>`;
+    $('#ag').onclick=()=>{SN={s:SN.s,k:0,ok:0,first:true,done:false,ord:st.map(()=>shuffle([2,4,5]))};rSen();};$('#bk').onclick=()=>{SN=null;rSen();};return;}
+  const x=st[SN.k],ord=SN.ord[SN.k];
+  const hist=st.slice(0,SN.k).map(h=>`<div class="small" style="margin:2px 0">🗨️ ${esc(h[0])}<br>↪️ <b>${esc(h[2])}</b></div>`).join('');
+  $('#app').innerHTML=`<button class="ghost sm" id="bk">← Durumlar</button><h2>${esc(sc[0])}</h2><p class="sub">${SN.k+1} / ${n}</p><div class="bar"><i style="width:${SN.k/n*100}%"></i></div>
+  ${hist?`<div class="card" style="opacity:.75">${hist}</div>`:''}
+  <div class="card"><div style="display:flex;gap:8px;align-items:center"><button class="ghost sm" id="pl">🔊</button><b style="font-size:19px">${esc(x[0])}</b></div><div class="small" id="ptr" style="margin-top:6px">${SN.done?'🇹🇷 '+esc(x[1]):''}</div>
+  <div style="margin-top:10px">${ord.map(i=>`<button class="opt" data-i="${i}">${esc(x[i])}</button>`).join('')}</div><div id="nx"></div></div>`;
+  $('#bk').onclick=()=>{SN=null;rSen();};
+  $('#pl').onclick=()=>say(x[0],.8);
+  setTimeout(()=>{if(view==='sen'&&SN&&SN.k<n&&st[SN.k]===x&&!SN.done)say(x[0],.8);},300);
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(SN.done)return;
+    if(+b.dataset.i===2){b.classList.add('ok');SN.done=true;if(SN.first){SN.ok++;xpa(3);}document.querySelectorAll('.opt').forEach(o=>o.disabled=true);
+      say(x[2],.8);$('#ptr').textContent='🇹🇷 '+x[1];
+      $('#nx').innerHTML=`<div class="small" style="margin-top:8px">✅ ${esc(x[3])}</div><button id="nb" style="margin-top:8px">${SN.k+1>=n?'Bitir':'Devam'} ➜</button>`;
+      $('#nb').onclick=()=>{SN.k++;SN.first=true;SN.done=false;rSen();};}
+    else{if(SN.first)misAdd({t:'x',q:x[0]+' — nasıl cevap verirsin?',o:[x[2],x[4],x[5]],a:x[2]});SN.first=false;b.classList.add('bad');b.disabled=true;}});
+}
+// ---- yazma pratiği ----
+const WRI=[
+["A1","Kendini tanıt: adını, yaşını, nerede yaşadığını ve mesleğini yaz.",12,[["Adın","je m appelle","je suis","moi c est"],["Yaşın","ans "],["Yaşadığın yer","j habite","habite","je vis"],["Mesleğin","je suis","je travaille","etudiant","ingenieur","professeur"]],"Bonjour, je m'appelle Ali. J'ai trente ans. J'habite à Istanbul. Je suis ingénieur."],
+["A1","Ailen hakkında 3–4 cümle yaz (kaç kişisiniz, kim kaç yaşında).",12,[["Aile üyeleri","mere","pere","frere","soeur","femme","mari","fils","fille"],["Sayı/yaş","ans ","deux","trois","quatre"],["Sahiplik","ma ","mon ","mes ","j ai"]],"J'ai une petite famille. Mon père s'appelle Ahmet et ma mère s'appelle Ayşe. J'ai un frère et une sœur. Mon frère a vingt ans."],
+["A1","Bir arkadaşına kısa bir mesaj yaz: yarın akşam sinemaya gitmeyi teklif et.",10,[["Selamlama","salut","bonjour","coucou"],["Yarın","demain"],["Sinema","cinema","film"],["Teklif","tu veux","on va","veux tu","viens"]],"Salut Marie ! Demain soir, tu veux aller au cinéma avec moi ? On regarde un film à vingt heures. Dis-moi vite !"],
+["A2","Dünkü gününü anlat (en az 4 cümle, geçmiş zaman kullan).",25,[["Dün","hier"],["Geçmiş zaman (j'ai ... / je suis ...)","j ai ","je suis alle","je suis allee","je suis rentre","je suis sorti","j ai mange","j ai travaille"],["Zaman ifadesi","le matin","l apres midi","le soir","ensuite","puis","a midi"]],"Hier, je me suis réveillé à sept heures. J'ai pris le petit-déjeuner, puis j'ai travaillé jusqu'à midi. L'après-midi, je suis allé au parc. Le soir, j'ai regardé un film."],
+["A2","Bir arkadaşını hafta sonu evine davet eden bir e-posta yaz.",25,[["Selamlama","cher","chere","salut","bonjour"],["Davet","inviter","invite","viens","venir","tu peux"],["Gün/saat","samedi","dimanche","heures","week end"],["Veda","a bientot","amities","bises","cordialement"]],"Salut Paul, ce week-end, je t'invite chez moi samedi à dix-neuf heures. Tu peux venir avec ta sœur. On va manger ensemble. À bientôt, Ali"],
+["A2","Mahallenin/şehrinin yaşadığın yerden hoşlandığın 3 yönünü yaz.",25,[["Mekân","quartier","ville","village","parc","magasin"],["Beğeni","j aime","me plait","il y a"],["Neden","parce que","car "]],"J'aime mon quartier parce qu'il est calme. Il y a un grand parc et beaucoup de magasins. Les voisins sont gentils."],
+["B1","Son tatilini anlat (nereye gittin, ne yaptın, nasıldı).",45,[["Yer","je suis alle","je suis allee","nous sommes alles","voyage","vacances"],["Geçmiş anlatım","j ai ","c etait","il y avait","il faisait"],["Görüş","j ai adore","j ai aime","c etait super","c etait magnifique","c etait"],["Bağlaç","mais","puis","ensuite","pendant","apres"]],"L'été dernier, je suis allé en Grèce avec des amis. Nous avons visité des îles et nous avons nagé tous les jours. Il faisait très chaud, mais c'était magnifique."],
+["B1","Bir ürün için şikâyet e-postası yaz (geç geldi, bozuk).",45,[["Hitap","madame","monsieur"],["Sorun","probleme","defectueux","en panne","retard","abime"],["Talep","je souhaite","je voudrais","je demande","remboursement","echange"],["Resmi veda","cordialement","salutations"]],"Madame, Monsieur, j'ai commandé un téléphone le 3 mai, mais je l'ai reçu avec dix jours de retard. De plus, l'écran est défectueux. Je souhaite un remboursement. Cordialement, A. Yılmaz"],
+["B1","Gelecekteki hedeflerini (iş, öğrenme, seyahat) anlat.",45,[["Gelecek (je vais / je voudrais)","je vais","je voudrais","j aimerais","j espere","l an prochain"],["Hedef","objectif","apprendre","travailler","voyager","metier"],["Neden","parce que","car ","pour "]],"L'année prochaine, je voudrais apprendre le français couramment parce que j'aimerais travailler en France. Je vais aussi voyager à Paris."],
+["B2","Uzaktan çalışmanın artı ve eksilerini yaz.",70,[["Artı","avantage","gain de temps","flexible","confort","economie"],["Eksi","inconvenient","isolement","solitude","difficile","probleme"],["Bağlaç","cependant","mais","par contre","en revanche","d une part","d autre part"],["Görüş","a mon avis","je pense","selon moi","il me semble"]],"D'une part, le télétravail permet de gagner du temps et d'être plus flexible. D'autre part, il crée parfois de l'isolement. À mon avis, le mieux est de combiner les deux."],
+["B2","Şehirlerde araç trafiğini azaltmak için bir çözüm önerisi yaz.",70,[["Öneri","il faudrait","on pourrait","je propose","il faut","je suggere"],["Konu","transport","voiture","velo","metro","bus","circulation"],["Sonuç","ainsi","donc","par consequent","c est pourquoi"],["Gerekçe","parce que","car ","en effet","puisque"]],"Il faudrait développer les transports en commun, car la circulation devient impossible. On pourrait aussi construire plus de pistes cyclables. Ainsi, moins de gens utiliseraient la voiture."],
+["B2","Bir filmi veya kitabı tavsiye et ya da eleştir.",70,[["Konu","film","livre","roman","histoire","personnage"],["Görüş","j ai aime","j ai adore","je recommande","decu","interessant"],["Gerekçe","parce que","car ","en effet"],["Karşıtlık","mais","pourtant","cependant"]],"J'ai récemment lu un roman que je recommande. L'histoire est captivante, même si la fin est un peu décevante. En effet, les personnages sont très bien construits."],
+["C1","İnsanlar için sosyal medyanın etkisi hakkında kısa bir deneme yaz.",110,[["Giriş","de nos jours","aujourd hui","actuellement"],["Karşıt görüş","certes","toutefois","cependant","neanmoins","en revanche"],["Gerekçe","en effet","par exemple","notamment","d ailleurs"],["Sonuç","en conclusion","en somme","pour conclure","somme toute"]],"De nos jours, les réseaux sociaux occupent une place considérable. Certes, ils facilitent la communication ; toutefois, ils peuvent nuire à la concentration. En conclusion, tout est une question de mesure."],
+["C1","Bir toplantıda yeni bir fikri savunan kısa bir konuşma metni yaz.",110,[["Hitap","mesdames","messieurs","chers collegues","chers amis"],["Fikir","je propose","je souhaite","il me semble","nous devons"],["Argüman","en effet","d abord","ensuite","enfin","par ailleurs"],["Kapanış","je vous remercie","merci de votre attention","en conclusion"]],"Chers collègues, je souhaite vous présenter une idée. D'abord, elle réduirait les coûts ; ensuite, elle améliorerait la qualité. Je vous remercie de votre attention."],
+];
+const ACC=/\b(etre|tres|francais|deja|ecole|ete|probleme|meme|apres|aujourdhui|a bientot|ca va|cafe|eleve|premiere|premier|derniere|ideal|ou es|ou est)\b/gi;
+let WR=null;
+function rWri(){
+  const hd=`<button class="ghost sm" id="bk">← Çalış</button>`;
+  if(!WR)WR={l:S.lvl,i:-1};
+  const lv=WRI.filter(x=>x[0]===WR.l);
+  const lc=`<div class="row">${LEVELS.map(l=>`<button class="chip ${l===WR.l?'sel':''}" data-lv="${l}">${l}</button>`).join('')}</div>`;
+  const wl=()=>document.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{WR={l:b.dataset.lv,i:-1};rWri();});
+  if(WR.i<0){
+    $('#app').innerHTML=hd+`<h2>📝 Yazma Pratiği</h2><p class="sub">Bir konu seç, Fransızca yaz. Uygulama gerekli öğeleri ve aksanları kontrol eder, ardından örnek metni gösterir.</p>${lc}`+(lv.length?lv.map((x,i)=>`<button class="ghost" data-i="${i}" style="width:100%;text-align:left;margin-bottom:6px">${esc(x[1])}<br><span class="small">En az ${x[2]} kelime</span></button>`).join(''):'<div class="card">Bu seviye için henüz konu yok. Başka bir seviye seç.</div>');
+    $('#bk').onclick=toWork;wl();document.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{WR={l:WR.l,i:+b.dataset.i,res:null,txt:''};rWri();});return;}
+  const x=lv[WR.i],r=WR.res;
+  $('#app').innerHTML=`<button class="ghost sm" id="bk">← Konular</button><h2>📝 ${esc(x[0])}</h2><div class="card"><b>${esc(x[1])}</b><div class="small">En az ${x[2]} kelime yaz.</div></div>
+  <textarea id="tx" rows="7" style="width:100%;padding:10px;font-size:16px;border-radius:10px;border:1px solid var(--line);box-sizing:border-box" placeholder="Fransızca yaz…" spellcheck="false" autocapitalize="sentences">${esc(WR.txt||'')}</textarea>
+  <div class="row"><button id="ck">✅ Kontrol et</button></div>
+  ${r?`<div class="card"><div style="font-size:18px;font-weight:700">${r.words} kelime ${r.words>=x[2]?'✅':'⚠️ (en az '+x[2]+')'}</div><div style="margin-top:8px">${r.items.map(i=>`<div>${i.ok?'✅':'⬜'} ${esc(i.n)}</div>`).join('')}</div>${r.acc.length?`<p class="small" style="margin-top:8px">🔎 Aksan eksik olabilir: <b>${esc(r.acc.join(', '))}</b></p>`:''}</div>
+  <div class="card" style="background:#f8fafc"><b>Örnek metin</b><p style="margin:6px 0">${esc(x[4])}</p><button class="ghost sm" id="pl">🔊 Dinle</button></div><div class="row"><button class="ghost" id="rs">Yeniden yaz</button><button id="nx">Başka konu ➜</button></div>`:''}`;
+  $('#bk').onclick=()=>{WR={l:WR.l,i:-1};rWri();};
+  $('#ck').onclick=()=>{const t=$('#tx').value;if(t.trim().length<3)return;const n=' '+normW(t).join(' ')+' ';
+    const items=x[3].map(g=>({n:g[0],ok:g.slice(1).some(k=>n.includes(' '+k))}));
+    const acc=[...new Set((t.toLowerCase().match(ACC)||[]))];
+    const words=t.trim().split(/\s+/).length;
+    WR.res={words,items,acc};WR.txt=t;const got=items.filter(i=>i.ok).length;
+    if(words>=x[2]&&got>=Math.ceil(items.length*.75)){xpa(5);cnt('wri');bump(5);save();}else xpa(1);
+    rWri();};
+  if($('#pl'))$('#pl').onclick=()=>say(x[4],.8);
+  if($('#rs'))$('#rs').onclick=()=>{WR.res=null;rWri();};
+  if($('#nx'))$('#nx').onclick=()=>{WR={l:WR.l,i:(WR.i+1)%lv.length,res:null,txt:''};rWri();};
+}
+// ---- günlük plan ----
+const PLN=[
+["🃏 5 kelime kartı çalış","cards",()=>{}],
+["👂 Dinle ve Yaz: bir set","dict",()=>{DX=null;}],
+["🎭 Bir gündelik durum canlandır","sen",()=>{SN=null;}],
+["🗣️ Telaffuz: bir ses grubu","pron",()=>{PN=null;}],
+["📰 Bir kısa metin oku","rdy",()=>{RDY=null;}],
+];
+function rPlan(){
+  const k=dayKey(new Date());if(!S.plan||S.plan.d!==k)S.plan={d:k,x:[],p:0};
+  const done=S.plan.x,n=PLN.length;
+  $('#app').innerHTML=`<button class="ghost sm" id="bk">← Çalış</button><h2>📅 Bugünün Planı</h2><p class="sub">Yaklaşık 15 dakika. Bitirdikçe işaretle.</p><div class="bar"><i style="width:${done.length/n*100}%"></i></div>`+PLN.map((p,i)=>`<div class="card" style="display:flex;gap:10px;align-items:center;${done.includes(i)?'opacity:.6':''}"><button class="ghost sm" data-c="${i}" style="min-width:42px">${done.includes(i)?'✅':'⬜'}</button><div style="flex:1">${esc(p[0])}</div><button class="sm" data-o="${i}">Aç</button></div>`).join('')+(done.length>=n?`<div class="card" style="text-align:center;background:#ecfdf5"><b>🎉 Bugünkü planı bitirdin!</b></div>`:'');
+  $('#bk').onclick=toWork;
+  document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const i=+b.dataset.c,j=done.indexOf(i);if(j>=0)done.splice(j,1);else done.push(i);if(done.length>=n&&!S.plan.p){S.plan.p=1;bump(10);}save();rPlan();});
+  document.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const p=PLN[+b.dataset.o];p[2]();view=p[1];render();});
 }
 
 // ---- Okunuş rehberi (harf → ses) ve virelangues (tekerlemeler) ----
