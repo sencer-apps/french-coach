@@ -80,7 +80,7 @@ let TTS=null,DICT=null,SAMPLE=null;
 const canWeb=typeof speechSynthesis!=='undefined'&&typeof SpeechSynthesisUtterance!=='undefined';
 function say(t,r){
   if(TTS){TTS.speak(t,{language:'en'}).catch(()=>{});return;}
-  if(canWeb){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='fr-FR';pv(u);u.rate=r||.8;speechSynthesis.speak(u);}catch(e){}}
+  if(canWeb){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='fr-FR';pv(u);u.rate=r||.8;clearTimeout(window.__sy);window.__sy=setTimeout(()=>{try{speechSynthesis.resume();speechSynthesis.speak(u);}catch(e){}},180);}catch(e){}}
 }
 const canSay=()=>!!TTS||canWeb;
 const VL='fr-FR';let VOICES=[];
@@ -717,7 +717,7 @@ function playSeq(sents,rate,onIdx,done){
     onIdx&&onIdx(i);let adv=false,w=null;const nx=()=>{if(adv||tok!==AU.tok)return;adv=true;clearTimeout(w);i++;setTimeout(step,450);};
     try{const u=new SpeechSynthesisUtterance(sents[i]);u.lang='fr-FR';pv(u);u.rate=rate;u.onend=nx;u.onerror=nx;speechSynthesis.speak(u);}catch(e){nx();}
     w=setTimeout(nx,Math.max(3000,sents[i].split(' ').length*650/rate+2500));};
-  try{speechSynthesis.cancel();}catch(e){}setTimeout(step,80);
+  try{speechSynthesis.cancel();speechSynthesis.resume();}catch(e){}setTimeout(step,300);
 }
 function rReader(){
   stopAudio();
