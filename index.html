@@ -412,6 +412,7 @@ async function rStoryHome(){
   $('#app').innerHTML=`<h2>📖 Hikâye Yolculuğu</h2><p class="sub">Kısa Fransızca hikâyeler.</p>${chips()}
   <div class="card"><b>${d.level} • ${d.stories.length} hikâye</b><p class="small">Okudun: ${d.stories.filter(s=>sd[s.n]).length} • Cümle kurdun: ${d.stories.filter(s=>bd[s.n]).length}</p>
   ${d.stories.map((s,i)=>`<button class="opt" data-st="${i}">${bd[s.n]?'✅':sd[s.n]?'📗':'📘'} ${s.n}. ${esc(s.title.split(' / ')[0])}<br><span class="small">${esc(s.focus)}</span></button>`).join('')}</div>
+  <div class="card"><b>✍️ Pratik: Türkçeden Fransızcaya çevir</b><p class="sub">Sana Türkçe hikâye cümleleri veririm, sen Fransızcasını yazarsın.</p>${d.practice.map((p,i)=>`<button class="opt" data-pr="${i}">${pd[d.level+p.n]?'✅':'✍️'} ${p.n}. ${esc(p.title)}<br><span class="small">${esc(p.focus)}</span></button>`).join('')}</div>
   <div class="card"><b>🎓 ${d.level} Seviye Sınavı (${d.exam.q.length} soru)</b><p class="sub">Geçme barajı: %80.${e!==undefined?` En iyi puanın: <b>${e}</b>/100`:''}</p><button id="gx">${e!==undefined?'Sınavı tekrarla':'Sınava başla'}</button></div>`;
   wire();
   document.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{CUR={l:S.lvl,i:+b.dataset.st};view='reader';render();});
