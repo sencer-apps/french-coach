@@ -564,18 +564,23 @@ function rNbr(){
 // ---- yanlışlarım ----
 function misAdd(m){
   const key=m.t+'|'+(m.q||m.en||m.w);if(S.mis.some(x=>x.t+'|'+(x.q||x.en||x.w)===key))return;
-  S.mis.push(m);if(S.mis.length>80)S.mis.shift();save();
+  m.box=0;m.due=0;S.mis.push(m);if(S.mis.length>80)S.mis.shift();save();
 }
 let MR=null;
+const misDue=()=>S.mis.filter(x=>(x.due||0)<=Date.now());
 function rMis(){
-  if(!MR||MR.done)MR={q:shuffle(S.mis).slice(0,10),k:0,ok:0,sel:null,flip:false,done:false,res:null};
+  if((!MR||MR.done)&&S.mis.length&&!misDue().length&&!(MR&&MR.force)){
+    const nx=Math.min(...S.mis.map(x=>x.due||0)),d=Math.max(1,Math.ceil((nx-Date.now())/864e5));
+    $('#app').innerHTML=`<button class="ghost sm" id="bk">← Çalış</button><h2>❗ Yanlışlarım</h2><div class="card" style="text-align:center"><div style="font-size:38px">✅</div><b>Bugünlük tekrarın tamam!</b><p class="small">${S.mis.length} yanlış aralıklı tekrar bekliyor. Sıradaki tekrar ${d} gün sonra.</p></div><div class="row"><button class="ghost" id="fc">Yine de çalış</button></div>`;
+    $('#bk').onclick=toWork;$('#fc').onclick=()=>{MR={force:true,done:true};rMis();};MR=null;return;}
+  if(!MR||MR.done){const force=MR&&MR.force;const pool=force?S.mis:misDue();MR={q:shuffle(pool.slice()).slice(0,10),k:0,ok:0,sel:null,flip:false,done:false,res:null};}
   if(!S.mis.length){$('#app').innerHTML=`<button class="ghost sm" id="bk">← Çalış</button><h2>❗ Yanlışlarım</h2><div class="card" style="text-align:center">Harika, listen boş! 🎉<p class="small">Quiz, sınav, cümle çalışmalarında yanlış yaptıkların burada toplanır.</p></div>`;$('#bk').onclick=toWork;MR=null;return;}
   if(MR.k>=MR.q.length){
-    bump(5);$('#app').innerHTML=`<h2>🛠️ Düzeltme bitti</h2><div class="card" style="text-align:center"><div style="font-size:42px;font-weight:800">${MR.ok} / ${MR.q.length}</div><p>doğru düzelttin. Kalan yanlış: <b>${S.mis.length}</b></p></div><div class="row">${S.mis.length?'<button id="ag">Devam et</button>':''}<button class="ghost" id="bk">Çalış merkezi</button></div>`;
+    bump(5);$('#app').innerHTML=`<h2>🛠️ Düzeltme bitti</h2><div class="card" style="text-align:center"><div style="font-size:42px;font-weight:800">${MR.ok} / ${MR.q.length}</div><p>doğru yaptın. Listede kalan: <b>${S.mis.length}</b></p><p class="small">Bir yanlış 3 ayrı günde doğru yapılınca listeden çıkar (önce 1, sonra 3 gün arayla).</p></div><div class="row">${S.mis.length?'<button id="ag">Devam et</button>':''}<button class="ghost" id="bk">Çalış merkezi</button></div>`;
     if($('#ag'))$('#ag').onclick=()=>{MR=null;rMis();};$('#bk').onclick=()=>{MR=null;toWork();};MR&&(MR.done=true);return;}
   const it=MR.q[MR.k];
   const head=`<button class="ghost sm" id="bk">← Çalış</button><p class="sub">Yanlışlarım • ${MR.k+1} / ${MR.q.length} (listede ${S.mis.length})</p><div class="bar"><i style="width:${MR.k/MR.q.length*100}%"></i></div>`;
-  const fixed=()=>{const i=S.mis.findIndex(x=>x.t===it.t&&(x.q||x.en||x.w)===(it.q||it.en||it.w));if(i>=0)S.mis.splice(i,1);MR.ok++;cnt('fix');xpa(3);};
+  const fixed=()=>{const i=S.mis.findIndex(x=>x.t===it.t&&(x.q||x.en||x.w)===(it.q||it.en||it.w));if(i>=0){const m=S.mis[i];m.box=(m.box||0)+1;if(m.box>=3)S.mis.splice(i,1);else m.due=Date.now()+[1,3][m.box-1]*864e5;save();}MR.ok++;cnt('fix');xpa(3);};
   const nxt=()=>{MR.k++;MR.sel=null;MR.flip=false;MR.res=null;rMis();};
   if(it.t==='x'){
     $('#app').innerHTML=head+`<div class="card"><b>${esc(it.q)}</b><div id="os">${it.o.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('')}</div><div id="nx"></div></div>`;
@@ -899,7 +904,7 @@ function goalCard(){
   const v=S.dxp[dayKey(new Date())]||0,p=Math.min(100,Math.round(v/S.goal*100)),due=nbDue().length;
   return `<div class="card"><div class="row"><b style="flex:1">🎯 Günlük hedef: ${v} / ${S.goal} XP</b><span>🔥 ${S.streak}</span></div><div class="bar" style="margin:8px 0"><i style="width:${p}%;background:${p>=100?'var(--ok)':'var(--pri)'}"></i></div>
   <div class="small">${p>=100?'Bugünkü hedefi tamamladın! 🎉':'Hedefe '+(S.goal-v)+' XP kaldı.'} • ✅ Bildiğin kelime: ${Object.keys(S.known).length}</div>
-  <div class="row" style="margin-top:8px">${due?`<button class="ghost sm" id="hdue">📒 ${due} kelime tekrar zamanı</button>`:''}${S.mis.length?`<button class="ghost sm" id="hmis">❗ ${S.mis.length} yanlışını düzelt</button>`:''}</div></div>`;
+  <div class="row" style="margin-top:8px">${due?`<button class="ghost sm" id="hdue">📒 ${due} kelime tekrar zamanı</button>`:''}${misDue().length?`<button class="ghost sm" id="hmis">❗ ${misDue().length} yanlışını tekrar et</button>`:''}</div></div>`;
 }
 function wireHome(){
   if($('#rsok'))$('#rsok').onclick=()=>{if(applyBackup(RS.data.data)){RS.data=null;toast('✅ Yedek geri yüklendi');render();}};
