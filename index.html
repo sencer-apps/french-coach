@@ -115,22 +115,24 @@ let ci=0,flip=false,order=[];
 function rCards(){
   preloadAll();
   if(S.topic==='top'&&!DECK.top[S.lvl].length&&LK[S.lvl]){$('#app').innerHTML=`<h2>🃏 Kelime Kartları</h2>${chips()}<div style="margin-top:8px">${tchips()}</div><div class="card small">Yükleniyor…</div>`;wire();loadLevel(S.lvl).then(()=>{if(view==='cards')rCards();});return;}
-  const d=deck();if(!order.length||order.key!==S.topic+S.lvl+d.length){order=shuffle(d.map((_,i)=>i));order.key=S.topic+S.lvl+d.length;ci=0;flip=false;}
+  const d=deck();if(order.key!==S.topic+S.lvl+d.length){order=shuffle(d.map((_,i)=>i).filter(i=>!S.known[d[i].w]));order.key=S.topic+S.lvl+d.length;ci=0;flip=false;}
   if(!d.length){$('#app').innerHTML=`<h2>🃏 Kelime Kartları</h2>${chips()}<div style="margin-top:8px">${tchips()}</div><div class="card">Bu seviyede kelime yok ya da yüklenemedi.</div>`;wire();return;}
-  const w=d[order[ci%order.length]];
+  if(!order.length){$('#app').innerHTML=`<h2>🃏 Kelime Kartları</h2>${chips()}<div style="margin-top:8px">${tchips()}</div><div class="card" style="text-align:center"><div style="font-size:40px">🎉</div><b>Bu destedeki tüm kelimeleri biliyorsun!</b><p class="small">✅ ${d.filter(x=>S.known[x.w]).length} kelime bilinenlerde.</p><p class="small">Başka bir seviye ya da konu seçerek devam edebilirsin.</p><p class="small"><a href="#" id="rk" style="color:var(--mut)">Bilinenleri sıfırla</a></p></div>`;wire();$('#rk').onclick=e=>{e.preventDefault();if(!confirm('Bu destedeki \"biliyorum\" işaretleri silinsin mi?'))return;d.forEach(x=>{delete S.known[x.w];});save();order=[];order.key='';rCards();};return;}
+  if(ci>=order.length)ci=0;
+  const w=d[order[ci]];
   $('#app').innerHTML=`<h2>🃏 Kelime Kartları</h2>${chips()}<div style="margin-top:8px">${tchips()}</div>
   <div class="card flash" id="fl">${flip?`${emoBig(w.w)}<div class="w" style="font-size:26px">${esc(w.tr)}</div>${ipaLine(w.w)}${exHtml(w)}`:`${emoBig(w.w)}<div class="w">${esc(w.w)}</div>${ipaLine(w.w)}<div class="small">Çevirmek için dokun</div>`}</div>
-  <div class="row"><button class="ghost" id="sp" ${canSay()?'':'hidden'}>🔊 Dinle</button><button class="ghost" id="ag">↻ Tekrar</button><button class="ghost" id="nbk">📒 Deftere</button><button class="ghost" id="pv">← Önceki</button><button class="ghost" id="sk">Atla →</button><button id="kn">✓ Biliyorum</button></div>
-  <p class="small">${ci%order.length+1} / ${order.length} • ✅ ${d.filter(x=>S.known[x.w]).length} biliyorum</p>`;
+  <div class="row"><button class="ghost" id="sp" ${canSay()?'':'hidden'}>🔊 Dinle</button><button class="ghost" id="ag">🔁 Bilmiyorum</button><button class="ghost" id="nbk">📒 Deftere</button><button class="ghost" id="pv">← Önceki</button><button class="ghost" id="sk">Atla →</button><button id="kn">✓ Biliyorum</button></div>
+  <p class="small">Kalan: ${order.length} kelime • ✅ ${d.filter(x=>S.known[x.w]).length} biliyorum</p><p class="small">✓ Biliyorum: kart bir daha gelmez • 🔁 Bilmiyorum: birkaç kart sonra tekrar gelir • 📒 Deftere: kelimeyi tekrar defterine ekler</p>`;
   wire();
   $('#fl').onclick=()=>{flip=!flip;if(flip)say(w.w);rCards();};
   $('#sp').onclick=()=>say(w.ex&&flip?w.ex:w.w);
   $('#nbk').onclick=()=>toast(nbAdd(w.w,w.tr,w.ex)?'📒 Deftere eklendi':'Zaten defterinde');
   const next=()=>{ci++;flip=false;rCards();};
-  $('#ag').onclick=()=>{delete S.known[w.w];save();next();};
+  $('#ag').onclick=()=>{delete S.known[w.w];save();const x=order.splice(ci,1)[0];order.splice(Math.min(ci+4,order.length),0,x);flip=false;rCards();};
   $('#sk').onclick=next;
   $('#pv').onclick=()=>{ci=(ci-1+order.length)%order.length;flip=false;rCards();};
-  $('#kn').onclick=()=>{S.known[w.w]=1;bump();next();};
+  $('#kn').onclick=()=>{S.known[w.w]=1;bump();order.splice(ci,1);flip=false;rCards();};
 }
 async function genWords(){
   const m=$('#gmsg');if(!SAMPLE){m.textContent='Bu özellik sadece claude.ai içinde çalışır.';return;}
@@ -592,7 +594,7 @@ let DX=null;
 async function rDict(){
   if(!canWeb){$('#app').innerHTML=`<button class="ghost sm" id="bk">← Çalış</button><h2>👂 Dinle ve Yaz</h2><div class="card">Bu cihaz/tarayıcı sesli okumayı desteklemiyor. Chrome (Android) veya Safari (iPhone) ile dene.</div>`;$('#bk').onclick=toWork;return;}
   if(!DX||DX.lvl!==S.lvl){const p=await needPool('👂 Dinle ve Yaz','dict');if(!p)return;const ex=[];try{const d=DATA[S.lvl]||{};(d.tp||[]).forEach(t=>(t.s||[]).forEach(x=>ex.push({en:String(x.en).replace(ZW,''),tr:String(x.tr).replace(ZW,'')})));(d.dl||[]).forEach(t=>(t.l||[]).forEach(x=>ex.push({en:String(x.en).replace(ZW,''),tr:String(x.tr).replace(ZW,'')})));}catch(e){}
-    const seenD=new Set();DX={lvl:S.lvl,items:shuffle([...p,...ex].filter(x=>x.en&&x.en.split(' ').length<=14&&x.en.split(' ').length>=3&&!seenD.has(x.en)&&seenD.add(x.en))).slice(0,8),k:0,ok:0,res:null};}
+    const seenD=new Set();DX={lvl:S.lvl,items:shuffle([...p,...ex].filter(x=>x.en&&x.tr&&x.en.split(' ').length<=14&&x.en.split(' ').length>=3&&!seenD.has(x.en)&&seenD.add(x.en))).slice(0,8),k:0,ok:0,res:null};}
   if(DX.k>=DX.items.length){bump(5);const o=DX.ok,n=DX.items.length;DX=null;
     $('#app').innerHTML=`<h2>🎉 Bitti!</h2><div class="card" style="text-align:center"><div style="font-size:42px;font-weight:800">${o} / ${n}</div><p>cümleyi birebir doğru yazdın</p></div><div class="row"><button id="ag">Yeni set</button><button class="ghost" id="bk">Çalış merkezi</button></div>`;
     $('#ag').onclick=rDict;$('#bk').onclick=toWork;return;}
@@ -610,11 +612,12 @@ async function rDict(){
   if(r&&$('#nb'))$('#nb').onclick=()=>{DX.k++;DX.res=null;rDict();};
 }
 // ---- konuşma pratiği ----
+function spkExtra(){const ex=[];try{const d=DATA[S.lvl]||{};(d.tp||[]).forEach(t=>(t.s||[]).forEach(x=>ex.push({en:String(x.en).replace(ZW,''),tr:String(x.tr).replace(ZW,'')})));(d.dl||[]).forEach(t=>(t.l||[]).forEach(x=>ex.push({en:String(x.en).replace(ZW,''),tr:String(x.tr).replace(ZW,'')})));}catch(e){}const sn=new Set();return ex.filter(x=>x.en&&!sn.has(x.en)&&sn.add(x.en));}
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 let SX=null,REC=null;
 async function rSpeak(){
   if(!SR){$('#app').innerHTML=`<button class="ghost sm" id="bk">← Çalış</button><h2>🎤 Konuşma Pratiği</h2><div class="card">Bu tarayıcı konuşma tanımayı desteklemiyor. Android'de Chrome ile dene.<p class="small">Not: Konuşma tanıma, tarayıcının/telefonun kendi servisiyle çalışır.</p></div>`;$('#bk').onclick=toWork;return;}
-  if(!SX||SX.lvl!==S.lvl){const p=await needPool('🎤 Konuşma Pratiği','speak');if(!p)return;SX={lvl:S.lvl,items:shuffle(p.filter(x=>{const n=x.en.split(' ').length;return n>=3&&n<=10;})).slice(0,5),k:0,ok:0,res:null,tries:0,listening:false,msg:''};}
+  if(!SX||SX.lvl!==S.lvl){const p=await needPool('🎤 Konuşma Pratiği','speak');if(!p)return;SX={lvl:S.lvl,items:shuffle([...p,...spkExtra()].filter(x=>{const n=x.en.split(' ').length;return x.tr&&n>=3&&n<=10;})).slice(0,5),k:0,ok:0,res:null,tries:0,listening:false,msg:''};}
   if(SX.k>=SX.items.length){bump(5);const o=SX.ok,n=SX.items.length;SX=null;
     $('#app').innerHTML=`<h2>🎉 Bitti!</h2><div class="card" style="text-align:center"><div style="font-size:42px;font-weight:800">${o} / ${n}</div><p>cümleyi başarıyla söyledin</p></div><div class="row"><button id="ag">Yeni set</button><button class="ghost" id="bk">Çalış merkezi</button></div>`;
     $('#ag').onclick=rSpeak;$('#bk').onclick=toWork;return;}
