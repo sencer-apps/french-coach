@@ -96,7 +96,7 @@ const NAV=[['home','🏠','Ana'],['story','📖','Hikâye'],['work','🧠','Çal
 const WORKV=['cards','quiz','nb','nbr','dict','speak','cloze','mis','tr','irr','dlg','gr','pic','ph','em','num','pron','ten','rdy','gen','conj','mq','cult','pr2','sen','kal','kq','wri','plan','srs','lis'];
 function renderNav(){$('#nav').innerHTML=NAV.map(n=>`<button data-v="${n[0]}" class="${view===n[0]||(view==='test'&&n[0]==='home')||(SUBV.includes(view)&&n[0]==='story')||(WORKV.includes(view)&&n[0]==='work')?'on':''}"><b>${n[1]}</b>${n[2]}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{view=b.dataset.v;render();});}
-function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,gen:rGen,conj:rConj,mq:()=>rMq(MQ&&MQ.id||'hom'),cult:rCult,pr2:rPr2,sen:rSen,kal:rKal,kq:rKq,wri:rWri,plan:rPlan,srs:rSrs,lis:rLis,prog:rProg})[view]();window.scrollTo(0,0);}
+function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,pdk:rPdk,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,gen:rGen,conj:rConj,mq:()=>rMq(MQ&&MQ.id||'hom'),cult:rCult,pr2:rPr2,sen:rSen,kal:rKal,kq:rKq,wri:rWri,plan:rPlan,srs:rSrs,lis:rLis,prog:rProg})[view]();window.scrollTo(0,0);}
 const chips=()=>`<div class="row">${LEVELS.map(l=>`<button class="chip ${l===S.lvl?'sel':''}" data-l="${l}">${l}</button>`).join('')}</div>`;
 const tchips=()=>`<div class="row">${Object.entries(TOPICS).map(([k,v])=>`<button class="chip ${k===S.topic?'sel':''}" data-t="${k}">${v.ic} ${v.n}</button>`).join('')}</div>`;
 function wire(){document.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{S.lvl=b.dataset.l;save();render();});document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{S.topic=b.dataset.t;save();render();});}
@@ -382,7 +382,7 @@ function endQ(){
 }
 
 // ---- hikâye yolculuğu ----
-const SUBV=['reader','build','prac','exam'];
+const SUBV=['reader','build','prac','pdk','exam'];
 const DATA={};
 async function loadLevel(l){
   if(DATA[l])return DATA[l];
@@ -948,17 +948,42 @@ const CON=[["can't","cannot"],["won't","will not"],["don't","do not"],["doesn't"
 function normW(t){t=String(t).toLowerCase().replace(/[’‘']/g,' ').replace(/œ/g,'oe').replace(/æ/g,'ae').normalize('NFD').replace(/[\u0300-\u036f]/g,'');return t.replace(/[^a-z0-9 ]+/g,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean);}
 function lcs(a,b){const m=a.length,n=b.length,T=Array.from({length:m+1},()=>Array(n+1).fill(0));for(let i=m-1;i>=0;i--)for(let j=n-1;j>=0;j--)T[i][j]=a[i]===b[j]?T[i+1][j+1]+1:Math.max(T[i+1][j],T[i][j+1]);
   const A=new Set(),B=new Set();let i=0,j=0;while(i<m&&j<n){if(a[i]===b[j]){A.add(i);B.add(j);i++;j++;}else if(T[i+1][j]>=T[i][j+1])i++;else j++;}return {n:T[0][0],A,B};}
+function rPdk(){
+  const d=DATA[CUR.l],p=d.practice[CUR.i],n=p.s.length;
+  if(CUR.k>=n){bump(3);save();
+    $('#app').innerHTML=`<h2>🎧 Dikte bitti!</h2><div class="card" style="text-align:center"><div style="font-size:42px;font-weight:800">${CUR.ok} / ${n}</div><p>birebir doğru yazdığın cümle</p></div><button id="rt" style="width:100%">Listeye dön</button>`;
+    $('#rt').onclick=()=>{CUR.intro=false;CUR.k=0;view='story';render();};return;}
+  const s=p.s[CUR.k],r=CUR.res;
+  $('#app').innerHTML=`<button class="ghost sm" id="bk">← Liste</button><p class="sub">🎧 ${esc(p.title)} • ${CUR.k+1} / ${n}</p><div class="bar"><i style="width:${CUR.k/n*100}%"></i></div>
+  <div class="card" style="text-align:center"><p class="sub">Cümleyi dinle ve yaz</p><button id="pl" style="font-size:22px">🔊 Dinle</button> <button class="ghost sm" id="sl">🐢 Yavaş</button></div>
+  <textarea id="inp" rows="3" ${r?'readonly':''}>${r?esc(r.text):''}</textarea>
+  ${r?'':`<div class="row" style="margin-top:8px"><button id="ck">Kontrol et</button><button class="ghost" id="sk">Cevabı göster</button></div>`}
+  <div id="fbk">${r?r.html:''}</div>`;
+  $('#bk').onclick=()=>{CUR.k=0;CUR.res=null;CUR.intro=false;view='story';render();};
+  $('#pl').onclick=()=>say(s.en,.9);$('#sl').onclick=()=>say(s.en,.5);
+  if(!r)setTimeout(()=>{if(view==='pdk'&&!CUR.res&&p.s[CUR.k]===s)say(s.en,.9);},300);
+  const show=(text,skip)=>{
+    const a=normW(text),b=normW(s.en),exact=!skip&&a.join(' ')===b.join(' ');
+    const mine=text.trim().split(/\s+/).filter(Boolean).map(w=>{const nw=normW(w)[0];return `<span style="padding:1px 4px;border-radius:5px;background:${skip?'#f3f4f6':nw&&b.includes(nw)?'#d1fae5':'#fee2e2'}">${esc(w)}</span>`;}).join(' ');
+    const html=`<div class="card" style="background:${exact?'#ecfdf5':'#fffbeb'}">${exact?'✅ <b>Birebir doğru!</b>':skip?'Doğrusu:':'Yeşil: doğru kelimeler, kırmızı: farklı.'}${skip?'':`<p>${mine}</p>`}<p><b>${esc(s.en)}</b></p><p class="small">🇹🇷 ${esc(s.tr)}</p></div><button id="nx" style="width:100%">Devam ➜</button>`;
+    CUR.res={text,html,exact};if(exact)CUR.ok++;rPdk();
+    $('#nx').onclick=()=>{CUR.k++;CUR.res=null;rPdk();};
+  };
+  if(!r){$('#ck').onclick=()=>{const t=$('#inp').value.trim();if(!t)return;show(t,false);};$('#sk').onclick=()=>show($('#inp').value.trim(),true);}
+}
 function rPrac(){
   const d=DATA[CUR.l],p=d.practice[CUR.i];
   if(CUR.k===0&&!CUR.intro){CUR.intro=true;
     $('#app').innerHTML=`<button class="ghost sm" id="bk">← Liste</button><h2>✍️ ${esc(p.title)}</h2><p class="sub">${esc(p.en)}</p><div class="card small">🎯 Gramer odağı: <b>${esc(p.focus)}</b></div>
     <div class="card" style="line-height:1.6"><b>Türkçe hikâye</b><p>${esc(p.text)}</p></div>
     <div class="card"><b>💡 İpuçları</b><div style="margin-top:6px">${p.hints.map(x=>`<div class="small" style="padding:3px 0">• ${esc(x)}</div>`).join('')}</div></div>
-    <button id="st" style="width:100%">Cümle cümle çevirmeye başla ➜</button>`;
+    <button id="st" style="width:100%">Cümle cümle çevirmeye başla ➜</button>${canSay()?'<button class="ghost" id="dk0" style="width:100%;margin-top:8px">🎧 Önce dinle ve dikte et</button>':''}`;
+    if($('#dk0'))$('#dk0').onclick=()=>{CUR.k=0;CUR.ok=0;CUR.res=null;CUR.intro=false;view='pdk';render();};
     $('#bk').onclick=()=>{CUR.intro=false;view='story';render();};$('#st').onclick=()=>rPrac();return;}
   if(CUR.k>=p.s.length){
     S.pd[d.level+p.n]=1;bump();save();
-    $('#app').innerHTML=`<h2>🎉 Hikâye çevrildi!</h2><div class="card" style="text-align:center"><div style="font-size:42px;font-weight:800">${CUR.ok} / ${p.s.length}</div><p>doğru çevirdiğin cümle</p></div><button id="rt">Listeye dön</button>`;
+    $('#app').innerHTML=`<h2>🎉 Hikâye çevrildi!</h2><div class="card" style="text-align:center"><div style="font-size:42px;font-weight:800">${CUR.ok} / ${p.s.length}</div><p>doğru çevirdiğin cümle</p></div><button id="dk" style="width:100%;margin-bottom:8px">🎧 Bu hikâyeyi dikte et</button><button class="ghost" id="rt" style="width:100%">Listeye dön</button>`;
+    $('#dk').onclick=()=>{CUR.k=0;CUR.ok=0;CUR.res=null;view='pdk';render();};
     $('#rt').onclick=()=>{CUR.intro=false;view='story';render();};return;}
   const s=p.s[CUR.k],r=CUR.res;
   $('#app').innerHTML=`<button class="ghost sm" id="bk">← Liste</button><p class="sub">${esc(p.title)} • Cümle ${CUR.k+1} / ${p.s.length}</p><div class="bar"><i style="width:${CUR.k/p.s.length*100}%"></i></div>
