@@ -1920,7 +1920,7 @@ function kqStart(si){
   const pool=si<0?all:all.filter(a=>a.ci===si);
   const qs=shuffle(pool.slice()).slice(0,si<0?10:Math.min(8,pool.length)).map(a=>{
     const d=shuffle(all.filter(b=>b.p[0]!==a.p[0])).slice(0,3).map(b=>b.p[0]);
-    return {tr:a.p[1],ans:a.p[0],opts:shuffle([a.p[0]].concat(d))};});
+    return {sc:KAL[a.ci].t,tr:a.p[1],ans:a.p[0],opts:shuffle([a.p[0]].concat(d))};});
   KQ={si,qs,k:0,ok:0,first:true,done:false};view='kq';render();
 }
 function rKq(){
@@ -1930,7 +1930,7 @@ function rKq(){
     $('#app').innerHTML=`<h2>🎉 Bitti!</h2><div class="card" style="text-align:center"><div style="font-size:42px;font-weight:800">${KQ.ok} / ${n}</div><p>ilk seferde doğru</p></div><div class="row"><button id="ag">Tekrar</button><button class="ghost" id="bk">Kalıplar</button></div>`;
     $('#ag').onclick=()=>kqStart(KQ.si);$('#bk').onclick=()=>{KQ=null;KL=null;view='kal';render();};return;}
   const q=KQ.qs[KQ.k];
-  $('#app').innerHTML=`<button class="ghost sm" id="bk">← Kalıplar</button><p class="sub">${KQ.k+1} / ${n}</p><div class="bar"><i style="width:${KQ.k/n*100}%"></i></div><div class="card"><div class="small">Şunu nasıl söylersin?</div><b style="font-size:19px">🇹🇷 ${esc(q.tr)}</b><div style="margin-top:10px">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('')}</div><div id="nx"></div></div>`;
+  $('#app').innerHTML=`<button class="ghost sm" id="bk">← Kalıplar</button><p class="sub">${KQ.k+1} / ${n}</p><div class="bar"><i style="width:${KQ.k/n*100}%"></i></div><div class="card">${typeof sceneSvg==='function'?sceneSvg(q.sc):''}<div class="small">Şunu nasıl söylersin?</div><b style="font-size:19px">🇹🇷 ${esc(q.tr)}</b><div style="margin-top:10px">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('')}</div><div id="nx"></div></div>`;
   $('#bk').onclick=()=>{KQ=null;KL=null;view='kal';render();};
   document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(KQ.done)return;
     if(q.opts[+b.dataset.i]===q.ans){b.classList.add('ok');KQ.done=true;if(KQ.first){KQ.ok++;xpa(2);}document.querySelectorAll('.opt').forEach(o=>o.disabled=true);say(q.ans,.8);
