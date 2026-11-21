@@ -96,7 +96,7 @@ const NAV=[['home','🏠','Ana'],['story','📖','Hikâye'],['work','🧠','Çal
 const WORKV=['cards','quiz','nb','nbr','dict','speak','cloze','mis','tr','irr','dlg','gr','pic','ph','em','num','pron','ten','rdy','gen','conj','mq','cult','pr2','sen','kal','kq','gap','wri','plan','srs','lis'];
 function renderNav(){$('#nav').innerHTML=NAV.map(n=>`<button data-v="${n[0]}" class="${view===n[0]||(view==='test'&&n[0]==='home')||(SUBV.includes(view)&&n[0]==='story')||(WORKV.includes(view)&&n[0]==='work')?'on':''}"><b>${n[1]}</b>${n[2]}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{view=b.dataset.v;render();});}
-function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,pdk:rPdk,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,gen:rGen,conj:rConj,mq:()=>rMq(MQ&&MQ.id||'hom'),cult:rCult,pr2:rPr2,sen:rSen,kal:rKal,kq:rKq,gap:rGap,wri:rWri,plan:rPlan,srs:rSrs,lis:rLis,prog:rProg})[view]();window.scrollTo(0,0);}
+function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,help:rHelp,pdk:rPdk,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,gen:rGen,conj:rConj,mq:()=>rMq(MQ&&MQ.id||'hom'),cult:rCult,pr2:rPr2,sen:rSen,kal:rKal,kq:rKq,gap:rGap,wri:rWri,plan:rPlan,srs:rSrs,lis:rLis,prog:rProg})[view]();window.scrollTo(0,0);}
 const chips=()=>`<div class="row">${LEVELS.map(l=>`<button class="chip ${l===S.lvl?'sel':''}" data-l="${l}">${l}</button>`).join('')}</div>`;
 const tchips=()=>`<div class="row">${Object.entries(TOPICS).map(([k,v])=>`<button class="chip ${k===S.topic?'sel':''}" data-t="${k}">${v.ic} ${v.n}</button>`).join('')}</div>`;
 function wire(){document.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{S.lvl=b.dataset.l;save();render();});document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{S.topic=b.dataset.t;save();render();});}
@@ -902,13 +902,46 @@ function restoreCard(){
   if(!RS.done){RS.done=true;syncCall('/sync/get',{}).then(r=>{if(r&&r.data){RS.data=r;if(view==='home')rHome();}});}
   return RS.data?`<div class="card" style="background:#fffbeb"><b>☁️ Yedeğin bulundu</b><p class="small">${esc(sumB(RS.data.data))} • ${esc(new Date(RS.data.at).toLocaleDateString('tr-TR'))}</p><button id="rsok">Yedeği geri yükle</button></div>`:'';
 }
+// ---- baykuş maskot ve kullanım rehberi ----
+const OWL_L=/Fransız/i.test(document.title)?'Fransızca':'Fransızca';
+function owlSvg(px,wave){return `<svg viewBox="0 0 100 100" width="${px}" height="${px}" aria-hidden="true" style="flex:none"><ellipse cx="50" cy="94" rx="24" ry="3.5" fill="#00000018"/><path d="M26 30 L22 12 L40 24Z M74 30 L78 12 L60 24Z" fill="#6f523a"/><ellipse cx="50" cy="58" rx="31" ry="34" fill="#8b6b4a"/><ellipse cx="50" cy="68" rx="20" ry="22" fill="#f0dcb8"/><path d="M40 62 q4 4 8 0 M52 62 q4 4 8 0 M36 72 q4 4 8 0 M48 72 q4 4 8 0 M60 72 q4 4 8 0 M44 82 q4 4 8 0 M56 82 q4 4 8 0" fill="none" stroke="#c9a874" stroke-width="2" stroke-linecap="round"/><ellipse cx="22" cy="64" rx="9" ry="20" fill="#6f523a" transform="rotate(8 22 64)"/>${wave?'<ellipse cx="82" cy="40" rx="9" ry="20" fill="#6f523a" transform="rotate(-35 82 40)"/>':'<ellipse cx="78" cy="64" rx="9" ry="20" fill="#6f523a" transform="rotate(-8 78 64)"/>'}<circle cx="38" cy="42" r="14" fill="#fff"/><circle cx="62" cy="42" r="14" fill="#fff"/><circle cx="38" cy="43" r="7" fill="#2a2018"/><circle cx="62" cy="43" r="7" fill="#2a2018"/><circle cx="40.5" cy="40.5" r="2.4" fill="#fff"/><circle cx="64.5" cy="40.5" r="2.4" fill="#fff"/><path d="M45 51 L55 51 L50 60Z" fill="#f08a1a"/><path d="M50 14 L74 24 L50 33 L26 24Z" fill="#2a3a5a"/><path d="M36 28 L36 34 Q50 40 64 34 L64 28 L50 34Z" fill="#1f2c46"/><path d="M72 25 L72 38" stroke="#f6c82a" stroke-width="2.4"/><circle cx="72" cy="40" r="2.8" fill="#f6c82a"/><path d="M40 90 l-3 5 M44 91 l-1 5 M60 90 l3 5 M56 91 l1 5" stroke="#f08a1a" stroke-width="3" stroke-linecap="round"/></svg>`;}
+const OWL_TIPS=[`Her gün 10 dakika, haftada bir saat çalışmaktan daha etkilidir.`,`Bilmediğin kelimeye dokun, defterine eklensin. Zamanı gelince sana tekrar sorarım.`,`Bir cümleyi sesli tekrar etmek, sadece okumaktan çok daha iyi yerleşir.`,`Yanlış yapmaktan korkma. Yanlışlarım listesi seni zamanla düzeltir.`,`Pratik bölümünde önce kendin çevir, sonra ipuçlarına bak.`,`Dikte modunda duyduğunu yaz. Kulağın hızla gelişir.`,`Konuşma Kalıpları'nı ezberleme, sahneyi gözünde canlandır.`,`Günlük hedefi tutturunca serin uzar. Küçük adımlar yeterli.`,`Telefonunun sesi açık olsun, dinleme çalışmaları için gerekli.`,`Zorlandığın seviyeden bir alta inmek ayıp değil, akıllıca bir adım.`,`Yeni bir kelimeyi bir cümle içinde öğrenmek, tek başına öğrenmekten kalıcıdır.`,`Resimli Quiz'de kelimeyi Türkçeye çevirmeden, direkt resimle bağdaştırmaya çalış.`];
+const OWL_STEPS=()=>[
+{ic:'👋',t:'Merhaba, ben Baykuş!',x:`${OWL_L} yolculuğunda yanındayım. Sana programı kısaca göstereyim. İstediğin zaman ana ekrandaki "Nasıl kullanılır?" düğmesinden bu rehbere geri dönebilirsin.`},
+{ic:'🏠',t:'Ana ekran: seviyeni seç',x:`Üstteki harflerden (A1–C2) seviyeni seç. Hangisi olduğunu bilmiyorsan "Seviyemi test et" ile 3 dakikada bul. Seviyeyi her zaman değiştirebilirsin.`,go:'home'},
+{ic:'🎯',t:'Günlük hedef ve seri',x:`Çalıştıkça XP kazanırsın. Günlük hedefi tutturursan serin (🔥) uzar. Hedefi İlerleme sayfasından 20, 30, 50 ya da 100 XP yapabilirsin.`,go:'prog'},
+{ic:'📖',t:'Hikâye Yolculuğu',x:`Seviyene uygun hikâyeleri oku. Bilmediğin kelimeye dokununca anlamını görürsün, 🔊 ile dinleyebilirsin. Hikâye sonunda sorular var.`,go:'story'},
+{ic:'✍️',t:'Pratik: cümle çevirme',x:`Hikâye bölümündeki Pratik'te Türkçe cümleyi ${OWL_L==='Fransızca'?"Fransızca'ya":"Fransızca'ye"} çevirirsin. Takılırsan ipucu al. 🎧 Dikte modunda ise duyduğunu yazarsın.`,go:'story'},
+{ic:'🧠',t:'Çalış merkezi',x:`Kelime defteri, dinle-yaz, konuşma pratiği, quiz, resimli quiz, zamanlar, sayılar ve daha fazlası burada. Her gün biraz farklı bir şey dene.`,go:'work'},
+{ic:'💬',t:'Konuşma Kalıpları ve Gündelik Durumlar',x:`Havalimanı, restoran, iş görüşmesi, kafe gibi gerçek durumlarda ne diyeceğini öğren. Sahne resimleri durumu gözünde canlandırmana yardım eder. Sonra "Bu durumu sına" ile dene.`,go:'work'},
+{ic:'📒',t:'Kelime defteri',x:`Bilmediğin kelimeleri deftere ekle. Aralıklı tekrar sistemi, unutmaya yakın olduğun kelimeleri sana zamanında sorar. Ana ekranda "tekrar zamanı" düğmesini görürsün.`,go:'nb'},
+{ic:'❗',t:'Yanlışlarım',x:`Yaptığın yanlışlar otomatik toplanır. Önce 1 gün, sonra 3 gün sonra tekrar sorulur. Üç ayrı günde doğru yaparsan listeden çıkar.`,go:'mis'},
+{ic:'🎤',t:'Ses ve mikrofon',x:`Dinleme için telefonun sesi açık olsun. Konuşma pratiğinde tarayıcı mikrofon izni ister, "İzin ver" de. Chrome en iyi sonucu verir.`},
+{ic:'📊',t:'İlerleme ve yedek',x:`İlerleme sayfasında serini, seviyeni ve zayıf konularını görürsün. Telefon değiştireceksen oradan yedek alıp yeni cihazda geri yükle.`,go:'prog'},
+{ic:'🚀',t:'Hazırsın!',x:`En iyi başlangıç: bugün tek bir hikâye oku ve 5 kelime çalış. Ben hep buradayım, sormak istersen ana ekrandan beni çağır.`,go:'home'}];
+let OH=0;
+function owlCard(){
+  const tip=OWL_TIPS[Math.floor(Date.now()/864e5)%OWL_TIPS.length];
+  return `<div class="card" style="display:flex;gap:10px;align-items:center;background:#fff8ec">${owlSvg(76,!S.owl)}<div style="flex:1"><div class="small" style="color:var(--mut)">🦉 Baykuş diyor ki</div><div style="font-size:15px;line-height:1.35;margin:2px 0 6px">${S.owl?tip:`Merhaba! ${OWL_L} yolculuğuna hoş geldin. Sana programı göstereyim mi?`}</div><button class="ghost sm" id="owlh">${S.owl?'📖 Nasıl kullanılır?':'👋 Beni tanı, rehberi başlat'}</button></div></div>`;}
+function rHelp(){
+  const st=OWL_STEPS(),n=st.length;OH=Math.max(0,Math.min(n-1,OH));const s=st[OH];
+  $('#app').innerHTML=`<button class="ghost sm" id="hbk">← Ana ekran</button><p class="sub" style="margin-top:6px">Nasıl kullanılır? • ${OH+1} / ${n}</p><div class="bar"><i style="width:${(OH+1)/n*100}%"></i></div>
+  <div class="card" style="background:#fff8ec"><div style="display:flex;gap:10px;align-items:flex-start">${owlSvg(84,OH===0||OH===n-1)}<div style="flex:1"><b style="font-size:18px">${s.ic} ${s.t}</b><p style="font-size:16px;line-height:1.45;margin:8px 0 0">${s.x}</p></div></div>${s.go?`<div class="row" style="margin-top:10px"><button class="ghost sm" id="hgo">👀 Şimdi bak</button></div>`:''}</div>
+  <div class="row"><button class="ghost" id="hpv" ${OH?'':'disabled'}>← Geri</button><button id="hnx">${OH>=n-1?'✅ Bitir':'İleri ➜'}</button></div>`;
+  $('#hbk').onclick=()=>{view='home';render();};
+  $('#hpv').onclick=()=>{OH--;rHelp();};
+  $('#hnx').onclick=()=>{if(OH>=n-1){S.owl=1;save();view='home';render();}else{OH++;if(OH>=n-1){S.owl=1;save();}rHelp();}};
+  if($('#hgo'))$('#hgo').onclick=()=>{S.owl=1;save();view=s.go;if(view==='nb'||view==='mis'){NR=null;MR=null;}render();};
+}
+
 function goalCard(){
   const v=S.dxp[dayKey(new Date())]||0,p=Math.min(100,Math.round(v/S.goal*100)),due=nbDue().length;
-  return `<div class="card"><div class="row"><b style="flex:1">🎯 Günlük hedef: ${v} / ${S.goal} XP</b><span>🔥 ${S.streak}</span></div><div class="bar" style="margin:8px 0"><i style="width:${p}%;background:${p>=100?'var(--ok)':'var(--pri)'}"></i></div>
+  return owlCard()+`<div class="card"><div class="row"><b style="flex:1">🎯 Günlük hedef: ${v} / ${S.goal} XP</b><span>🔥 ${S.streak}</span></div><div class="bar" style="margin:8px 0"><i style="width:${p}%;background:${p>=100?'var(--ok)':'var(--pri)'}"></i></div>
   <div class="small">${p>=100?'Bugünkü hedefi tamamladın! 🎉':'Hedefe '+(S.goal-v)+' XP kaldı.'} • ✅ Bildiğin kelime: ${Object.keys(S.known).length}</div>
   <div class="row" style="margin-top:8px">${due?`<button class="ghost sm" id="hdue">📒 ${due} kelime tekrar zamanı</button>`:''}${misDue().length?`<button class="ghost sm" id="hmis">❗ ${misDue().length} yanlışını tekrar et</button>`:''}</div></div>`;
 }
 function wireHome(){
+  if($('#owlh'))$('#owlh').onclick=()=>{OH=0;view='help';render();};
   if($('#rsok'))$('#rsok').onclick=()=>{if(applyBackup(RS.data.data)){RS.data=null;toast('✅ Yedek geri yüklendi');render();}};
   if($('#hdue'))$('#hdue').onclick=()=>{NR=null;view='nbr';render();};
   if($('#hmis'))$('#hmis').onclick=()=>{MR=null;view='mis';render();};
