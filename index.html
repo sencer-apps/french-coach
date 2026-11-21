@@ -2881,7 +2881,7 @@ const emoBig=w=>{const e=pic(w,72);return e?`<div style="line-height:1.15;margin
 const PICS={};
 const _c=(x,y,r,f,s)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${f}"${s?` stroke="${s}" stroke-width="2"`:''}/>`;
 const _e=(x,y,a,b,f)=>`<ellipse cx="${x}" cy="${y}" rx="${a}" ry="${b}" fill="${f}"/>`;
-const _r=(x,y,w,h,f,q)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${q||0}" fill="${f}"/>`;
+const _r=(x,y,w,h,f,q,s)=>{const st=typeof q==='string'?q:null,rx=typeof q==='number'?q:(s||0);return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${f}"${st?` stroke="${st}" stroke-width="1.5"`:''}/>`};
 const _p=(d,f,s,w)=>`<path d="${d}" fill="${f||'none'}"${s?` stroke="${s}" stroke-width="${w||2.5}" stroke-linecap="round" stroke-linejoin="round"`:''}/>`;
 const _eyes=(y,d,col)=>_c(50-d,y,2.6,col||'#222')+_c(50+d,y,2.6,col||'#222');
 // hayvan yüzü: ana renk, kulak çizimi, yüz detayları
