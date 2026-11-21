@@ -161,7 +161,7 @@ function mkQs(words,lv,n){
   });
   return qs;
 }
-function mkQuiz(){qz={qs:mkQs(deck(),S.lvl,10),i:0,c:0,done:false,lock:false};}
+function mkQuiz(){const dk=deck(),un=dk.filter(x=>!S.known[x.w]);qz={qs:mkQs(un.length>=10?un:dk,S.lvl,10),i:0,c:0,done:false,lock:false};}
 
 function rQuiz(){
   if(S.topic==='top'&&!DECK.top[S.lvl].length&&LK[S.lvl]){$('#app').innerHTML=`<h2>✅ Quiz</h2>${chips()}<div style="margin:8px 0">${tchips()}</div><div class="card small">Yükleniyor…</div>`;wire();loadLevel(S.lvl).then(()=>{if(view==='quiz')rQuiz();});return;}
@@ -391,7 +391,15 @@ async function loadLevel(l){
     const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:raw.slice(0,12)},LK[l],raw.slice(12));DATA[l]=stamp(JSON.parse(new TextDecoder().decode(pt)));DECK.top[l]=(DATA[l].words||[]).map(x=>{if(x.p)IPA[x.w.toLowerCase()]=x.p;return {w:x.w,tr:x.tr,ex:x.ex||''};});GL=null;}catch(e){return null;}
   return DATA[l];
 }
-const spl=t=>t.split(/(?<=[.!?])['"”’]?\s+(?=['"“‘«]?[\p{Lu}0-9])/u).map(x=>x.trim()).filter(Boolean);
+const spl=t=>t.replace(/\b(Mr|Mrs|Ms|Dr|St|Prof|Jr|Sr|vs|M|Mme|Mlle|etc)\./g,'$1\u0001').split(/(?<=[.!?])['"”’]?\s+(?=['"“‘«]?[\p{Lu}0-9])/u).map(x=>x.replace(/\u0001/g,'.').trim()).filter(Boolean);
+function alignS(e,t){const n=e.length,m=t.length,INF=1e9,L=a=>a.reduce((z,x)=>z+x.length,0);
+  const D=Array.from({length:n+1},()=>Array(m+1).fill(INF)),B=Array.from({length:n+1},()=>Array(m+1).fill(null));D[0][0]=0;
+  const mv=[[1,1,0],[1,0,4],[0,1,4],[2,1,1.2],[1,2,1.2]];
+  for(let i=0;i<=n;i++)for(let j=0;j<=m;j++){if(D[i][j]>=INF)continue;
+    for(const [di,dj,pn] of mv){const ni=i+di,nj=j+dj;if(ni>n||nj>m)continue;const la=L(e.slice(i,ni)),lb=L(t.slice(j,nj));
+      const c=D[i][j]+pn+(la&&lb?Math.abs(Math.log(lb/la))*3:6);if(c<D[ni][nj]){D[ni][nj]=c;B[ni][nj]=[i,j,di,dj];}}}
+  const out=[];let i=n,j=m;while(i||j){const b=B[i][j];if(!b)return null;out.push(b);i=b[0];j=b[1];}
+  return out.reverse().filter(b=>b[2]&&b[3]===1).map(b=>[e.slice(b[0],b[0]+b[2]).join(' '),t.slice(b[1],b[1]+b[3]).join(' ')]);}
 const pcount=a=>Object.keys(a||{}).length;
 const NEXT={A1:'A2',A2:'B1',B1:'B2',B2:'C1',C1:'C2'};
 let CUR=null; // {l,i} seçili hikâye/pratik
@@ -470,7 +478,10 @@ async function pool(){
   const l=S.lvl;if(PL[l])return PL[l];
   const d=await loadLevel(l);if(!d)return null;hintsGL(d);const out=[];
   d.stories.forEach(s=>{const e=spl(s.en.replace(ZW,'')),t=spl(s.tr.replace(ZW,'')),al=e.length===t.length;
-    e.forEach((x,i)=>{const n=x.split(' ').length;if(n>=3&&n<=14&&/\p{L}/u.test(x))out.push({en:x,tr:al?t[i]:null,f:s.focus,n:s.n});});});
+    if(al){e.forEach((x,i)=>{const n=x.split(' ').length;if(n>=3&&n<=14&&/\p{L}/u.test(x))out.push({en:x,tr:t[i],f:s.focus,n:s.n});});}
+    else{let ps=null;try{ps=alignS(e,t);}catch(er){}
+      if(ps)ps.forEach(q=>{const n=q[0].split(' ').length;if(n>=3&&n<=14&&/[A-Za-z]/.test(q[0]))out.push({en:q[0],tr:q[1],f:s.focus,n:s.n});});
+      else e.forEach(x=>{const n=x.split(' ').length;if(n>=3&&n<=14&&/[A-Za-z]/.test(x))out.push({en:x,tr:null,f:s.focus,n:s.n});});}});
   return PL[l]=out;
 }
 function faRec(f,ok){if(!f)return;const a=S.fa[f]||(S.fa[f]={ok:0,n:0});a.n++;if(ok)a.ok++;}
