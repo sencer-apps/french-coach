@@ -1110,7 +1110,7 @@ async function rDlg(){
   const back=()=>{stopAudio();DL.sel=-1;rDlg();};
   const bub=(e,i,hide)=>`<div style="display:flex;justify-content:${e.s==='A'?'flex-start':'flex-end'};margin:6px 0"><div class="card" id="ln${i}" style="max-width:85%;margin:0;padding:8px 12px;background:${e.s==='A'?'#fff':'#e0e7ff'}"><div class="small" style="opacity:.6">${e.s==='A'?'Karşı taraf':'Sen'}</div>${hide?'<i>…</i>':`<div>${esc(cl(e.en))}</div>${DL.tr?`<div class="small">${esc(cl(e.tr))}</div>`:''}`}</div></div>`;
   if(DL.m==='r'){
-    $('#app').innerHTML=`<button class="ghost sm" id="bk">← Liste</button><h2>💬 ${esc(cl(x.t))}</h2>
+    $('#app').innerHTML=`<button class="ghost sm" id="bk">← Liste</button><h2>💬 ${esc(cl(x.t))}</h2>${sceneSvg(cl(x.t))}
     <div>${L.map((e,i)=>bub(e,i,false)).join('')}</div>
     <div class="row" style="margin-top:10px"><button id="pl">🔊 Dinle</button><button class="ghost" id="st" style="display:none">⏹ Durdur</button><button class="ghost" id="tg">${DL.tr?'Türkçeyi gizle':'Türkçeyi göster'}</button></div>
     <button id="go" style="width:100%;margin-top:8px;background:#16a34a">🎭 Rol yap (B sensin)</button>`;
@@ -1126,12 +1126,12 @@ async function rDlg(){
   const shown=L.slice(0,DL.k);
   const cur=L[DL.k];
   if(cur.s==='A'){
-    $('#app').innerHTML=`<button class="ghost sm" id="bk">← Liste</button><p class="sub">🎭 ${esc(cl(x.t))} • rol yapma</p><div class="bar"><i style="width:${DL.k/L.length*100}%"></i></div>${shown.map((e,i)=>bub(e,i,false)).join('')}${bub(cur,DL.k,false)}<button id="nx" style="width:100%;margin-top:8px">Devam ➜</button>`;
+    $('#app').innerHTML=`<button class="ghost sm" id="bk">← Liste</button><p class="sub">🎭 ${esc(cl(x.t))} • rol yapma</p><div class="bar"><i style="width:${DL.k/L.length*100}%"></i></div>${sceneSvg(cl(x.t))}${shown.map((e,i)=>bub(e,i,false)).join('')}${bub(cur,DL.k,false)}<button id="nx" style="width:100%;margin-top:8px">Devam ➜</button>`;
     $('#bk').onclick=()=>{DL.m='r';rDlg();};say(cl(cur.en));$('#nx').onclick=()=>{DL.k++;DL.opts=null;DL.first=true;rDlg();};return;}
   if(!DL.opts){
     const others=[];list.forEach((q,qi)=>{if(qi!==DL.sel)q.l.forEach((e,j)=>{if(e.s==='B'&&e.en!==cur.en)others.push(e.en);});});
     DL.opts=shuffle([cur.en,...shuffle(others).slice(0,2)]);}
-  $('#app').innerHTML=`<button class="ghost sm" id="bk">← Liste</button><p class="sub">🎭 ${esc(cl(x.t))} • rol yapma</p><div class="bar"><i style="width:${DL.k/L.length*100}%"></i></div>${shown.map((e,i)=>bub(e,i,false)).join('')}
+  $('#app').innerHTML=`<button class="ghost sm" id="bk">← Liste</button><p class="sub">🎭 ${esc(cl(x.t))} • rol yapma</p><div class="bar"><i style="width:${DL.k/L.length*100}%"></i></div>${sceneSvg(cl(x.t))}${shown.map((e,i)=>bub(e,i,false)).join('')}
   <div class="card"><b>Sıra sende. Doğru cevabı seç:</b><div class="small" style="margin:4px 0">💡 ${esc(cl(cur.tr))}</div><div id="os">${DL.opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(cl(o))}</button>`).join('')}</div><div id="nx"></div></div>`;
   $('#bk').onclick=()=>{DL.m='r';rDlg();};
   document.querySelectorAll('#os .opt').forEach(b=>b.onclick=()=>{
@@ -1908,7 +1908,7 @@ function rKal(){
     $('#bk').onclick=toWork;$('#kq').onclick=()=>kqStart(-1);document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{KL={s:+b.dataset.s};rKal();});return;}
   const x=KAL[KL.s];
   const rows=(arr,k)=>arr.map((p,i)=>`<div class="card" style="padding:10px;margin:6px 0"><div style="display:flex;gap:8px;align-items:center"><button class="ghost sm" data-say="${k}${i}">🔊</button><div style="flex:1"><b>${esc(p[0])}</b><div class="small">🇹🇷 ${esc(p[1])}</div></div><button class="ghost sm" data-nb="${k}${i}" title="Deftere ekle">📒</button></div></div>`).join('');
-  $('#app').innerHTML=hd.replace('← Çalış','← Durumlar')+`<h2>${esc(x.t)}</h2><button id="kq" style="width:100%">🎯 Bu durumu sına</button><h3 style="margin:10px 0 4px">🗣️ Sen söyleyebilirsin</h3>${rows(x.y,'y')}<h3 style="margin:14px 0 4px">👂 Karşındaki söyleyebilir</h3>${rows(x.h,'h')}`;
+  $('#app').innerHTML=hd.replace('← Çalış','← Durumlar')+`<h2>${esc(x.t)}</h2>${typeof sceneSvg==='function'?sceneSvg(x.t):''}<button id="kq" style="width:100%">🎯 Bu durumu sına</button><h3 style="margin:10px 0 4px">🗣️ Sen söyleyebilirsin</h3>${rows(x.y,'y')}<h3 style="margin:14px 0 4px">👂 Karşındaki söyleyebilir</h3>${rows(x.h,'h')}`;
   $('#bk').onclick=()=>{KL=null;rKal();};$('#kq').onclick=()=>kqStart(KL.s);
   const get=k=>{const a=k[0]==='y'?x.y:x.h;return a[+k.slice(1)];};
   document.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>say(get(b.dataset.say)[0],.8));
@@ -3108,13 +3108,17 @@ apartment:_bg('#f4ecdc','#c4a478')+_pi('window',270,26,110)+_pi('sofa',500,150,1
 complaint:_bg('#f4e4e0','#c9b0a4')+_pi('clock',300,24,70)+_who('manager','woman')+_ctr('#6a4a3a')+_pi('plate',296,160,60)+_pi('angry',380,160,50),
 office:_bg('#e8ecf0','#b8bcc4')+_pi('flag',40,30,80)+_pi('clock',560,30,70)+_who('manager','woman')+_ctr('#5a6a7a')+_pi('paper',292,150,62)+_pi('pen',366,158,56),
 cinema:_bg('#2a2a3a','#3a2a3a',190)+_r(60,24,200,100,'#8ac4ec',4)+_pi('star',280,24,50)+_who('clerk','girl')+_ctr('#6a2a3a')+_pi('ticket',296,152,60)+_pi('cake',372,164,50),
+school:_bg('#fff4d6','#c9a878')+_r(200,28,280,100,'#2f5a46',4)+_p('M216 52 L400 52 M216 74 L360 74 M216 96 L420 96','none','#fafafa',4)+_pi('book',30,150,60)+_pi('pencil',580,150,60)+_who('teacher','student')+_r(250,230,180,10,'#8a5a3a',3),
+bus:_bg('#cfe8f8','#7a7a86',190)+_pi('bus',160,40,300)+_pi('tree',560,70,100)+_who('driver','woman').replace('x="30" y="86" width="210" height="214"','x="20" y="100" width="170" height="200"').replace('x="440" y="86" width="210" height="214"','x="480" y="100" width="170" height="200"'),
 gym:_bg('#e8f0e0','#a8b4a0')+_pi('mirror',30,40,110)+_pi('clock',560,24,70)+_who('trainer','man')+_pi('basketball',290,196,60)+_pi('medal',370,170,66),
 };
-const _SCK=[['☕','cafe'],['🏨','hotel'],['🚕','taxi'],['🛒','shop'],['👗','shop'],['🍽','restaurant'],['🏥','doctor'],['📞','phone'],['🚆','station'],['💼','interview'],['✈','airport'],['🧭','street'],['💊','pharmacy'],['👋','meeting'],['💇','hair'],['😠','complaint'],['🏛','office'],['🎟','cinema'],['🏋','gym']];
+const _SCK=[['☕','cafe'],['🏨','hotel'],['🚕','taxi'],['🛒','shop'],['👗','shop'],['🛍','shop'],['🍽','restaurant'],['🏥','doctor'],['🚨','doctor'],['📞','phone'],['📅','phone'],['🚆','station'],['💼','interview'],['🏢','interview'],['✈','airport'],['🌴','airport'],['🧭','street'],['💊','pharmacy'],['👋','meeting'],['💬','meeting'],['💇','hair'],['😠','complaint'],['🏛','office'],['🏦','office'],['🎟','cinema'],['🏋','gym'],['🔧','taxi'],['🏘','neighbour']];
+const _SCW=[[/kuaf/i,'hair'],[/tanış|rencontre|arkadaş|ami\b/i,'meeting'],[/kafe|café/i,'cafe'],[/market|alışveriş|vêtement|acheter|kıyafet/i,'shop'],[/yol sor|chemin/i,'street'],[/telefon|téléphone/i,'phone'],[/okul|école/i,'school'],[/otobüs|\bbus\b/i,'bus'],[/yemek|restoran|restaurant/i,'restaurant'],[/iş görüş|toplantı|réunion|entretien/i,'interview'],[/şikâyet|plainte|réclamation/i,'complaint'],[/ev kiral|daire|appartement/i,'apartment'],[/banka|banque|posta/i,'office'],[/tren|train|gare|istasyon/i,'station'],[/otel|hôtel|hotel/i,'hotel'],[/doktor|médecin|hastane/i,'doctor'],[/havaalan|havalimanı|aéroport|airport/i,'airport'],[/taksi|taxi/i,'taxi'],[/eczane|pharmacie/i,'pharmacy'],[/komşu|voisin/i,'neighbour'],[/uçuş|\bvol\b/i,'airport'],[/sinema|cinéma/i,'cinema'],[/hastane|hôpital|sağlık/i,'doctor'],[/kütüphane|bibliothèque|dil kurs|akademik|thèse|séminaire|ders/i,'school'],[/garagiste|tamir|plomberie/i,'taxi'],[/maaş|müzakere|négociation|pazarlık|proje|performans|ortaklık|sunum|konferans|kriz|comité|entretien|mülakat|toplantı|réunion|copropriété|basın|interview|söyleşi|sözle/i,'interview'],[/kargo|prêt|sigorta|poste|dava|plaidoirie|kira sorun/i,'office'],[/table|masa|dîner|yemeğinde/i,'restaurant'],[/collègue|iş arkadaş|anlaşmazlık|plan yap|plan\b|tatil/i,'meeting'],[/müze|musée|sanat|galerie|atelier/i,'office']];
 function sceneSvg(title){let k=null;const t=String(title);
   if(t.indexOf('🏠')>=0)k=/Komşu/.test(t)?'neighbour':'apartment';else{const f=_SCK.find(a=>t.indexOf(a[0])>=0);k=f&&f[1];}
+  if(!k){const w=_SCW.find(a=>a[0].test(t));k=w&&w[1];}
   if(!k||!SCN[k])return '';
-  return `<svg viewBox="0 0 680 300" width="100%" aria-hidden="true" style="display:block;border-radius:10px;margin-bottom:8px">${SCN[k]}</svg>`;}
+  return `<svg viewBox="0 0 680 300" width="100%" aria-hidden="true" style="display:block;border-radius:10px;margin:8px 0">${SCN[k]}</svg>`;}
 
 let PQ=null;
 async function rPic(){
