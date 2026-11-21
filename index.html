@@ -1903,7 +1903,9 @@ function gapMake(){
   shuffle(ex.slice()).forEach(x=>{if(items.length>=10)return;
     const ws=x.en.split(/\s+/),ix=ws.map((w,i)=>[w,i]).filter(a=>{const c=strip(a[0]);return c.length>=4&&!/['’-]/.test(c);});
     if(!ix.length)return;const [w,i]=pick(ix),c=strip(w),lc=c.toLowerCase();
-    const ds=shuffle(uniq.filter(u=>u!==lc&&Math.abs(u.length-lc.length)<=3&&u[0]!==lc[0])).slice(0,3);if(ds.length<3)return;
+    const sc=u=>(u.slice(-3)===lc.slice(-3)?3:u.slice(-2)===lc.slice(-2)?2:u.slice(-1)===lc.slice(-1)?1:0)*2-Math.abs(u.length-lc.length)*0.5+Math.random()*1.5;
+    const prev=i>0?strip(ws[i-1]).toLowerCase():'';
+    const ds=uniq.filter(u=>u!==lc&&Math.abs(u.length-lc.length)<=3&&u[0]!==lc[0]&&!(prev&&u===prev)).sort((a,b)=>sc(b)-sc(a)).slice(0,3);if(ds.length<3)return;
     const cap=c[0]!==lc[0];const f=s=>cap?s[0].toUpperCase()+s.slice(1):s;
     const q=ws.map((t,j)=>j===i?t.replace(c,'_____'):t).join(' ');
     items.push({q,tr:x.tr,fr:x.en,a:f(lc),o:shuffle([f(lc)].concat(ds.map(f)))});});
